@@ -1,5 +1,5 @@
 const App = () => {
-    return <div className='App'>Clickity Clack</div>;
+    return <div className=''>Clickity Clack</div>;
 };
 
 export default App;
