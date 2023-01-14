@@ -24,11 +24,25 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-        <title>React App</title>
+        <title>Clickity Clack</title>
+        <script src="https://js.pusher.com/7.2/pusher.min.js%22%3E"></script>
+        <script>
+            // Enable pusher logging - don't include this in production
+            Pusher.logToConsole = true;
+
+            const pusher = new Pusher("a97e1f5ac552a37ff7fe", {
+                cluster: "us2",
+            });
+
+            const channel = pusher.subscribe("my-channel");
+            channel.bind("my-event", function (data) {
+                alert(JSON.stringify(data));
+            });
+        </script>
     </head>
-    <body class="bg-black h-full w-full">
+    <body class="bg-black h-screen w-wcreen">
         <noscript>You need to enable JavaScript to run this app.</noscript>
-        <div id="root"></div>
+        <div class="h-screen w-wcreen" id="root"></div>
         <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
