@@ -1,16 +1,13 @@
-import { useState, FC, FormEvent } from "react";
-import { Socket } from "socket.io-client";
+import { useState, FormEvent, ReactNode } from "react";
+import api from "../services/http";
 
-interface PerformanceInputProps {
-    socket: Socket;
-}
-
-const PerformanceInput: FC<PerformanceInputProps> = ({ socket }) => {
+const PerformanceInput = () => {
     const [performanceText, setPerformanceText] = useState("");
 
-    const submitForm = (e: FormEvent) => {
+    const submitForm = async (e: FormEvent) => {
         e.preventDefault();
-        socket.emit("message", performanceText);
+        const res = await api.get("/api/test");
+        console.log(res);
         setPerformanceText("");
     };
 
