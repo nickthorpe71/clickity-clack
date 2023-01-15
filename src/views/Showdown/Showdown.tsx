@@ -31,15 +31,12 @@ const Showdown = () => {
     );
 
     useEffect(() => {
-        setTechnique(getCurrentRound().technique);
-        setCanInput(true);
-    }, [getCurrentRound]);
-
-    useEffect(() => {
-        console.log("resub");
         subOnRoundComplete(userId, (data: any) => {
             onRoundComplete.current(data);
         });
+
+        setTechnique(getCurrentRound().technique);
+        setCanInput(true);
     }, []);
 
     useEffect(() => {
