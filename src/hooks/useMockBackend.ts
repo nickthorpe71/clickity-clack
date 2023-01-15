@@ -67,23 +67,19 @@ function useMockBackend() {
     };
 
     const mockCreateShowdown = async (userId: string) => {
-        try {
-            await sleep(3000);
-            showdownSubs.current[userId]({
-                id: "shd-1",
-                techniques: range(5).map(createRound),
-                combatants: [
-                    {
-                        userId: userId,
-                    },
-                    {
-                        userId: "comb-2",
-                    },
-                ],
-            });
-        } catch (e) {
-            console.log(e);
-        }
+        await sleep(1000);
+        showdownSubs.current[userId]({
+            id: "shd-1",
+            rounds: range(5).map(createRound),
+            combatants: [
+                {
+                    userId: userId,
+                },
+                {
+                    userId: "comb-2",
+                },
+            ],
+        });
     };
 
     const postJoinShowdown = async (userId: string) => {
@@ -100,14 +96,10 @@ function useMockBackend() {
     };
 
     const mockRound = async (userId: string) => {
-        try {
-            await sleep(3000);
-            roundSubs.current[userId]({
-                winner: Math.random() < 0.5 ? userId : "opponent",
-            });
-        } catch (e) {
-            console.log(e);
-        }
+        await sleep(2000);
+        roundSubs.current[userId]({
+            winner: Math.random() < 0.5 ? userId : "opponent",
+        });
     };
 
     const postSubmitPerformance = async (

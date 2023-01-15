@@ -34,7 +34,7 @@ const App = () => {
 
 export default App;
 
-// Pusher stuff
+// ----- Pusher -----
 
 // import Pusher from "pusher-js";
 

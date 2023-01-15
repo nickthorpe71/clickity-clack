@@ -2,6 +2,7 @@ import { useEffect, useContext } from "react";
 
 // types
 import { GAME_STATE, GameManagerContextType } from "../../types/gameManager.d";
+import { Round } from "../../types/game.d";
 
 // state
 import { GameManager } from "../../context/gameManager";
@@ -10,7 +11,7 @@ import { GameManager } from "../../context/gameManager";
 import useMockBackend from "../../hooks/useMockBackend";
 
 const Lobby = () => {
-    const { userId, setGameState } = useContext(
+    const { userId, setGameState, setRounds } = useContext(
         GameManager
     ) as GameManagerContextType;
 
@@ -19,6 +20,8 @@ const Lobby = () => {
     useEffect(() => {
         subOnShowdownReady(userId, (data: any) => {
             console.log(data);
+            const rounds = data.rounds as Round[];
+            setRounds(rounds);
             setGameState(GAME_STATE.SHOWDOWN);
         });
     }, []);
