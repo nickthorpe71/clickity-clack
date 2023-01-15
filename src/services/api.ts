@@ -9,7 +9,7 @@ const http = axios.create({
     },
 });
 
-export default {
+const actions = {
     get: (endpoint: string) => http.get(`${baseURL}${endpoint}`),
     post: (endpoint: string, data: any) =>
         http.post(`${baseURL}${endpoint}`, data),
@@ -17,3 +17,9 @@ export default {
         http.put(`${baseURL}${endpoint}`, data),
     delete: (endpoint: string) => http.delete(`${baseURL}${endpoint}`),
 };
+
+const api = {
+    joinShowdown: (userId: string) => actions.post("/api/showdown", { userId }),
+};
+
+export default api;

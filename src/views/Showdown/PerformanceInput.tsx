@@ -1,13 +1,15 @@
-import { useState, FormEvent, ReactNode } from "react";
-import api from "../services/http";
+import { useState, FormEvent, FC } from "react";
 
-const PerformanceInput = () => {
+interface PerformanceInputProps {
+    submitPerformance: (duration: number) => void;
+}
+
+const PerformanceInput: FC<PerformanceInputProps> = ({ submitPerformance }) => {
     const [performanceText, setPerformanceText] = useState("");
 
     const submitForm = async (e: FormEvent) => {
         e.preventDefault();
-        const res = await api.get("/api/test");
-        console.log(res);
+        submitPerformance(10);
         setPerformanceText("");
     };
 

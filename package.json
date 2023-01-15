@@ -11,6 +11,7 @@
         "@types/react": "^18.0.26",
         "@types/react-dom": "^18.0.10",
         "axios": "^1.2.2",
+        "lodash": "^4.17.21",
         "pusher": "^5.1.2",
         "pusher-js": "^8.0.0",
         "react": "^18.2.0",
@@ -45,6 +46,7 @@
     },
     "proxy": "http://i0l7l1kcg3.sharedwithexpose.com",
     "devDependencies": {
+        "@types/lodash": "^4.14.191",
         "tailwindcss": "^3.2.4"
     }
 }
