@@ -1,7 +1,11 @@
-import { useRef } from "react";
+import { useRef, useContext } from "react";
 import { sample, startCase, range } from "lodash";
 
+// state
+import { GameManager } from "../context/gameManager";
+
 // types
+import { GameManagerContextType } from "../types/gameManager.d";
 import {
     Showdown,
     JoinShowdownAPIResponse,
@@ -66,6 +70,7 @@ const adverbs = [
 ];
 
 function useBackend(isAI: boolean = false) {
+    const { setUserId } = useContext(GameManager) as GameManagerContextType;
     const { subscribe } = usePusher();
 
     const mockRoundSubs = useRef<{ [key: string]: (data: any) => void }>({});
@@ -90,7 +95,7 @@ function useBackend(isAI: boolean = false) {
         userId: string,
         callback: (data: any) => void
     ) => {
-        await sleep(1000);
+        await sleep(1500);
         callback({
             id: "shd-1",
             rounds: range(5).map(createMockRound),
@@ -114,7 +119,10 @@ function useBackend(isAI: boolean = false) {
             return;
         }
         try {
-            const res: JoinShowdownAPIResponse = await API.joinShowdown(userId);
+            const res: { data: JoinShowdownAPIResponse } =
+                await API.joinShowdown(userId);
+            if (res.data.userId !== userId) setUserId(res.data.userId);
+
             subscribe(`showdown.${res.data.showdownId}.ready`, callback);
         } catch (err) {
             console.error(err);

@@ -5,7 +5,7 @@ export interface Showdown {
 }
 
 export interface Combatant {
-    userId: string;
+    id: string;
 }
 
 export interface Round {

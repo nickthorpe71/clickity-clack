@@ -1,4 +1,4 @@
-import { Round } from "./game.d";
+import { Round, Combatant } from "./game.d";
 
 export enum GAME_STATE {
     INTRO,
@@ -16,9 +16,9 @@ export type GameManagerContextType = {
     setShowdownState: (
         showdownId: string,
         newRounds: Round[],
-        combatants: string[]
+        combatants: Combatant[]
     ) => void;
     getCurrentRound: () => Round;
     showdownId: string;
-    combatants: string[];
+    combatants: Combatant[];
 };

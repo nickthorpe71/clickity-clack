@@ -2,7 +2,7 @@ import { useContext } from "react";
 
 // types
 import { GAME_STATE, GameManagerContextType } from "../../types/gameManager.d";
-import { Round } from "../../types/game.d";
+import { Round, Showdown, Combatant } from "../../types/game.d";
 
 // state
 import { GameManager } from "../../context/gameManager";
@@ -18,10 +18,10 @@ const Lobby = () => {
     const { joinShowdown } = useBackend();
 
     const join = async () => {
-        joinShowdown(userId, (data: any) => {
+        joinShowdown(userId, (data: Showdown) => {
             const showdownId = data.id as string;
             const rounds = data.rounds as Round[];
-            const combatants = data.combatants as string[];
+            const combatants = data.combatants as Combatant[];
 
             setShowdownState(showdownId, rounds, combatants);
             setGameState(GAME_STATE.SHOWDOWN);

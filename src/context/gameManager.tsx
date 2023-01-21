@@ -1,6 +1,13 @@
-import { FC, ReactNode, useState, createContext, useRef } from "react";
+import {
+    FC,
+    ReactNode,
+    useState,
+    createContext,
+    useRef,
+    useEffect,
+} from "react";
 import { GAME_STATE, GameManagerContextType } from "../types/gameManager.d";
-import { Round } from "../types/game.d";
+import { Round, Combatant } from "../types/game.d";
 
 export const GameManager = createContext<GameManagerContextType | null>(null);
 
@@ -16,10 +23,16 @@ const GameManagerProvider: FC<GameManagerProps> = ({ children }) => {
     const showdownId = useRef<string>("");
     const rounds = useRef<Round[]>([]);
     const roundIndex = useRef<number>(0);
-    const combatants = useRef<string[]>([]);
+    const combatants = useRef<Combatant[]>([]);
+
+    useEffect(() => {
+        const localId = localStorage.getItem("userId");
+        userId.current = localId ? localId : "comb-1";
+    }, []);
 
     const setUserId = (newUserId: string): void => {
         userId.current = newUserId;
+        localStorage.setItem("userId", newUserId);
     };
 
     const nextRound = (): string => {
@@ -31,7 +44,7 @@ const GameManagerProvider: FC<GameManagerProps> = ({ children }) => {
     const setShowdownState = (
         newShowdownId: string,
         newRounds: Round[],
-        newCombatants: string[]
+        newCombatants: Combatant[]
     ): void => {
         showdownId.current = newShowdownId;
         rounds.current = newRounds;
