@@ -3,6 +3,7 @@ import { useEffect, useContext, useState, useRef } from "react";
 // types
 import {
     GAME_STATE,
+    SHOWDOWN_STATE,
     GameManagerContextType,
     RoundCompletedEventResponse,
     ShowdownCompletedEventResponse,
@@ -18,14 +19,18 @@ import useBackend from "../../hooks/useBackend";
 import { sleep } from "../../utils";
 
 // components
-import PerformanceInput from "./PerformanceInput";
+import ShowdownHUD from "./HUD/ShowdownHUD";
+import ShowdownScene from "./Scene/ShowdownScene";
 
 const Showdown = () => {
     const { userId, nextRound, setGameState, getCurrentRound, showdownId } =
         useContext(GameManager) as GameManagerContextType;
 
-    const { submitPerformance, startShowdown } = useBackend(true);
+    const { submitPerformance, startShowdown } = useBackend(false);
 
+    const [showdownState, setShowdownState] = useState<SHOWDOWN_STATE>(
+        SHOWDOWN_STATE.NOT_STARTED
+    );
     const [myScore, setMyScore] = useState<number>(0);
     const [opponentScore, setOpponentScore] = useState<number>(0);
     const [technique, setTechnique] = useState<string>("");
@@ -36,13 +41,8 @@ const Showdown = () => {
 
     useEffect(() => {
         console.log("start showdown");
-        startShowdown(
-            showdownId,
-            handleRoundCompletedEvent,
-            handleShowdownCompletedEvent
-        );
-        setTechnique(getCurrentRound().technique);
-        setCanInput(true);
+        startShowdown(handleRoundCompletedEvent, handleShowdownCompletedEvent);
+        startShowdownRound();
     }, []);
 
     useEffect(() => {
@@ -53,8 +53,16 @@ const Showdown = () => {
             await sleep(3000);
             setTechnique(nextRound());
             setCanInput(true);
+            setShowdownState(SHOWDOWN_STATE.ROUND_COMPLETED);
         };
     }, [myScore, opponentScore]);
+
+    const startShowdownRound = async () => {
+        await sleep(2000);
+        setCanInput(true);
+        setTechnique(getCurrentRound().technique);
+        setShowdownState(SHOWDOWN_STATE.SUBMITTING_PERFORMANCE);
+    };
 
     const handleRoundCompletedEvent = (data: RoundCompletedEventResponse) => {
         console.log("round complete", data);
@@ -69,7 +77,7 @@ const Showdown = () => {
     };
 
     const onShowdownComplete = async (data: ShowdownCompletedEventResponse) => {
-        console.log("on showdown complete", data);
+        setShowdownState(SHOWDOWN_STATE.ROUND_COMPLETED);
         const winner = data.winner;
         console.log("winner", winner);
 
@@ -98,27 +106,24 @@ const Showdown = () => {
     const handleSubmitPerformance = async (duration: number) => {
         try {
             setCanInput(false);
-            await submitPerformance(
-                userId,
-                duration,
-                showdownId,
-                getCurrentRound().id
-            );
+            await submitPerformance(duration, showdownId, getCurrentRound().id);
+            setShowdownState(SHOWDOWN_STATE.WAITING_FOR_OPPONENT);
         } catch (e) {
             console.log(e);
         }
     };
 
     return (
-        <div className='z-hud-background'>
+        <div className='z-hud-background w-full h-full'>
             <h1>Showdown</h1>
-            <p>{`Technique: ${technique}`}</p>
-            <p>{`My score: ${myScore}`}</p>
-            <p>{`Opp score: ${opponentScore}`}</p>
-
-            {canInput && (
-                <PerformanceInput submitPerformance={handleSubmitPerformance} />
-            )}
+            <ShowdownHUD
+                myScore={myScore}
+                opponentScore={opponentScore}
+                technique={technique}
+                canInput={canInput}
+                submitPerformance={handleSubmitPerformance}
+            />
+            <ShowdownScene showdownState={showdownState} />
         </div>
     );
 };

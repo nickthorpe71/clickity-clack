@@ -1,15 +1,25 @@
-import { useState, FormEvent, FC } from "react";
+import { useState, FormEvent, FC, useEffect } from "react";
 
 interface PerformanceInputProps {
+    technique: string;
     submitPerformance: (duration: number) => void;
 }
 
 const PerformanceInput: FC<PerformanceInputProps> = ({ submitPerformance }) => {
     const [performanceText, setPerformanceText] = useState("");
+    const [startTime, setStartTime] = useState<number>(0);
+
+    // start timer when component is mounted
+    // stop timer when component is unmounted
+    useEffect(() => {
+        setStartTime(Date.now());
+    }, []);
 
     const submitForm = async (e: FormEvent) => {
         e.preventDefault();
-        submitPerformance(2000);
+        const endTime = Date.now();
+        const duration = endTime - startTime;
+        submitPerformance(duration);
         setPerformanceText("");
     };
 

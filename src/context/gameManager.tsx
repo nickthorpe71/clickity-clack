@@ -1,11 +1,4 @@
-import {
-    FC,
-    ReactNode,
-    useState,
-    createContext,
-    useRef,
-    useEffect,
-} from "react";
+import { FC, ReactNode, useState, createContext, useRef } from "react";
 import { GAME_STATE, GameManagerContextType } from "../types/gameManager.d";
 import { Round, Combatant } from "../types/game.d";
 
@@ -16,7 +9,6 @@ interface GameManagerProps {
 }
 
 const GameManagerProvider: FC<GameManagerProps> = ({ children }) => {
-    const userId = useRef<string>("comb-1");
     const [gameState, setGameState] = useState<GAME_STATE>(GAME_STATE.LOBBY);
 
     // Showdown state
@@ -25,13 +17,11 @@ const GameManagerProvider: FC<GameManagerProps> = ({ children }) => {
     const roundIndex = useRef<number>(0);
     const combatants = useRef<Combatant[]>([]);
 
-    useEffect(() => {
-        const localId = localStorage.getItem("userId");
-        userId.current = localId ? localId : "comb-1";
-    }, []);
+    const getUserId = (): string => {
+        return localStorage.getItem("userId") || "comb-1";
+    };
 
     const setUserId = (newUserId: string): void => {
-        userId.current = newUserId;
         localStorage.setItem("userId", newUserId);
     };
 
@@ -46,10 +36,20 @@ const GameManagerProvider: FC<GameManagerProps> = ({ children }) => {
         newRounds: Round[],
         newCombatants: Combatant[]
     ): void => {
+        console.log(
+            "setShowdownState",
+            newShowdownId,
+            newRounds,
+            newCombatants
+        );
         showdownId.current = newShowdownId;
         rounds.current = newRounds;
         roundIndex.current = 0;
         combatants.current = newCombatants;
+    };
+
+    const setShowdownId = (newShowdownId: string): void => {
+        showdownId.current = newShowdownId;
     };
 
     const getCurrentRound = (): Round => {
@@ -59,8 +59,9 @@ const GameManagerProvider: FC<GameManagerProps> = ({ children }) => {
     return (
         <GameManager.Provider
             value={{
-                userId: userId.current,
+                userId: getUserId(),
                 setUserId,
+                setShowdownId,
                 gameState,
                 setGameState,
                 nextRound,

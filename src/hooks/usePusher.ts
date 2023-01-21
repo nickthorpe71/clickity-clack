@@ -1,33 +1,41 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import Pusher from "pusher-js";
+// Pusher.logToConsole = false;
 
 function usePusher() {
-    const [pusher, setPusher] = useState<any>(null);
-    const [subscriptions, setSubscriptions] = useState<string[]>([]);
+    const pusher = useRef<any>(null);
+    const subscriptions = useRef<string[]>([]);
 
     // Initialize Pusher
     useEffect(() => {
-        Pusher.logToConsole = false;
-        if (pusher) return;
-        setPusher(
-            new Pusher("a97e1f5ac552a37ff7fe", {
+        if (pusher.current) return;
+        try {
+            const newPusher = new Pusher("a97e1f5ac552a37ff7fe", {
                 cluster: "us2",
-            })
-        );
+            });
+            pusher.current = newPusher;
+        } catch (err) {
+            console.error(err);
+        }
 
-        // Cleanup Subscriptions
         return () => {
-            subscriptions.forEach((channel) => pusher.unsubscribe(channel));
+            subscriptions.current.forEach((channel) =>
+                pusher.current.unsubscribe(channel)
+            );
         };
-    }, [pusher, subscriptions]);
+    }, []);
 
     const subscribe = (
         channel: string,
         event: string,
         callback: (data: any) => void
     ) => {
-        pusher.subscribe(channel).bind(event, callback);
-        setSubscriptions([...subscriptions, channel]);
+        try {
+            pusher.current.subscribe(channel).bind(event, callback);
+            subscriptions.current = [...subscriptions.current, channel];
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     return { subscribe };

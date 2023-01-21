@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://i0l7l1kcg3.sharedwithexpose.com";
+const baseURL = "https://wktjyi7ccf.sharedwithexpose.com";
 
 const http = axios.create({
     baseURL,
@@ -20,7 +20,10 @@ const actions = {
 
 const api = {
     joinShowdown: (userId: string) =>
-        actions.get(`/api/showdown/join/${userId}`),
+        actions.get(`/api/showdown/join/${userId === "comb-1" ? "" : userId}`),
+    // joinShowdown: (userId: string) => actions.get(`/api/showdown/join/`),
+    confirmShowdown: (showdownId: string) =>
+        actions.get(`/api/showdown/${showdownId}/confirm`),
     submitPerformance: (
         userId: string,
         duration: number,

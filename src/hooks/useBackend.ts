@@ -20,34 +20,45 @@ import API from "../services/api";
 import MockAPI from "../services/mockAPI";
 
 function useBackend(isAI: boolean = false) {
-    const { setUserId } = useContext(GameManager) as GameManagerContextType;
+    const { userId, setUserId, setShowdownId, showdownId } = useContext(
+        GameManager
+    ) as GameManagerContextType;
     const { subscribe } = usePusher();
 
-    const joinShowdown = async (
-        userId: string,
-        callback: (data: Showdown) => void
-    ) => {
+    const joinShowdown = async (callback: (data: Showdown) => void) => {
         if (isAI) {
             MockAPI.startMockShowdown(userId, callback);
             return;
         }
         try {
+            console.log("join showdown request with user:", userId);
             const res: { data: JoinShowdownAPIResponse } =
                 await API.joinShowdown(userId);
-            if (res.data.userId !== userId) setUserId(res.data.userId);
+
+            const newShowdownId = res.data.id;
+
+            console.log("res", res);
+            if (res.data.userId !== userId) {
+                console.log("setting user id", res.data.userId);
+                setUserId(res.data.userId);
+            }
+
+            setShowdownId(newShowdownId);
 
             subscribe(
-                `showdown.${res.data.showdownId}.ready`,
+                `showdown.${newShowdownId}.ready`,
                 "ShowdownReady",
                 callback
             );
+
+            if (res.data.combatantIds.length > 1)
+                await API.confirmShowdown(newShowdownId);
         } catch (err) {
             console.error(err);
         }
     };
 
     const startShowdown = async (
-        showdownId: string,
         roundCompletedCallback: (data: RoundCompletedEventResponse) => void,
         showdownCompletedCallback: (
             data: ShowdownCompletedEventResponse
@@ -76,7 +87,6 @@ function useBackend(isAI: boolean = false) {
     };
 
     const submitPerformance = async (
-        userId: string,
         duration: number,
         showdownId: string,
         roundId: string
@@ -86,6 +96,7 @@ function useBackend(isAI: boolean = false) {
             return;
         }
         try {
+            console.log("submit performance request with user:", userId);
             await API.submitPerformance(userId, duration, showdownId, roundId);
         } catch (err) {
             console.error(err);

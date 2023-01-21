@@ -3,8 +3,9 @@ export interface UserAPIResponse {
 }
 
 export interface JoinShowdownAPIResponse {
-    showdownId: string;
+    id: string;
     userId: string;
+    combatantIds: string[];
 }
 
 export interface RoundCompletedEventResponse {
