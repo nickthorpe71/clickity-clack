@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useContext } from "react";
 
 // types
 import { GAME_STATE, GameManagerContextType } from "../../types/gameManager.d";
@@ -8,31 +8,24 @@ import { Round } from "../../types/game.d";
 import { GameManager } from "../../context/gameManager";
 
 // hooks
-import useMockBackend from "../../hooks/useMockBackend";
+import useBackend from "../../hooks/useBackend";
 
 const Lobby = () => {
-    const { userId, setGameState, setRounds } = useContext(
+    const { userId, setGameState, setShowdownState } = useContext(
         GameManager
     ) as GameManagerContextType;
 
-    const { postJoinShowdown, subOnShowdownReady } = useMockBackend();
+    const { joinShowdown } = useBackend();
 
-    useEffect(() => {
-        subOnShowdownReady(userId, (data: any) => {
-            console.log(data);
+    const join = async () => {
+        joinShowdown(userId, (data: any) => {
+            const showdownId = data.id as string;
             const rounds = data.rounds as Round[];
-            setRounds(rounds);
+            const combatants = data.combatants as string[];
+
+            setShowdownState(showdownId, rounds, combatants);
             setGameState(GAME_STATE.SHOWDOWN);
         });
-    }, []);
-
-    const joinShowdown = async () => {
-        try {
-            const res = await postJoinShowdown(userId);
-            console.log("joining res", res);
-        } catch (e) {
-            console.log(e);
-        }
     };
 
     return (
@@ -41,7 +34,7 @@ const Lobby = () => {
             <div className='text-slate-50 h-min'>
                 <button
                     className='bg-gray-800 px-4 py-1 rounded-md'
-                    onClick={joinShowdown}
+                    onClick={join}
                 >
                     Join Showdown
                 </button>

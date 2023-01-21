@@ -13,6 +13,12 @@ export type GameManagerContextType = {
     gameState: GAME_STATE;
     setGameState: (newState: GAME_STATE) => void;
     nextRound: () => string;
-    setRounds: (newRounds: Round[]) => void;
+    setShowdownState: (
+        showdownId: string,
+        newRounds: Round[],
+        combatants: string[]
+    ) => void;
     getCurrentRound: () => Round;
+    showdownId: string;
+    combatants: string[];
 };

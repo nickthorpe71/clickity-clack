@@ -19,7 +19,21 @@ const actions = {
 };
 
 const api = {
-    joinShowdown: (userId: string) => actions.post("/api/showdown", { userId }),
+    joinShowdown: (userId: string) =>
+        actions.get(`/api/showdown/join/${userId}`),
+    submitPerformance: (
+        userId: string,
+        duration: number,
+        showdownId: string,
+        roundId: string
+    ) =>
+        actions.post(
+            `/api/showdown/${showdownId}/round/${roundId}/performance`,
+            {
+                userId,
+                duration,
+            }
+        ),
 };
 
 export default api;

@@ -1,13 +1,17 @@
 import { useEffect, useContext, useState, useRef } from "react";
 
 // types
-import { GAME_STATE, GameManagerContextType } from "../../types/gameManager.d";
+import { GAME_STATE, GameManagerContextType } from "../../types";
+import {
+    RoundCompletedEventResponse,
+    ShowdownCompletedEventResponse,
+} from "../../types";
 
 // state
 import { GameManager } from "../../context/gameManager";
 
 // hooks
-import useMockBackend from "../../hooks/useMockBackend";
+import useBackend from "../../hooks/useBackend";
 
 // utils
 import { sleep } from "../../utils";
@@ -16,68 +20,97 @@ import { sleep } from "../../utils";
 import PerformanceInput from "./PerformanceInput";
 
 const Showdown = () => {
-    const { userId, nextRound, setGameState, getCurrentRound } = useContext(
-        GameManager
-    ) as GameManagerContextType;
+    const { userId, nextRound, setGameState, getCurrentRound, showdownId } =
+        useContext(GameManager) as GameManagerContextType;
 
-    const { subOnRoundComplete, postSubmitPerformance } = useMockBackend();
+    const { submitPerformance, startShowdown } = useBackend();
 
     const [myScore, setMyScore] = useState<number>(0);
     const [opponentScore, setOpponentScore] = useState<number>(0);
     const [technique, setTechnique] = useState<string>("");
     const [canInput, setCanInput] = useState<boolean>(false);
-    const onRoundComplete = useRef<(data: any) => Promise<void>>(
-        async (_: any) => {}
-    );
+    // const onRoundComplete = useRef<(data: any) => Promise<void>>(
+    //     async (_: any) => {}
+    // );
 
     useEffect(() => {
-        subOnRoundComplete(userId, (data: any) => {
-            onRoundComplete.current(data);
-        });
+        startShowdown(
+            showdownId,
+            handleRoundCompletedEvent,
+            handleShowdownCompletedEvent
+        );
 
         setTechnique(getCurrentRound().technique);
         setCanInput(true);
     }, []);
 
-    useEffect(() => {
-        onRoundComplete.current = async (data: any) => {
-            incrementScore(data.winner);
-            setTechnique("");
-            await sleep(3000);
-            setTechnique(nextRound());
-            setCanInput(true);
-        };
-    }, [myScore, opponentScore, technique, canInput, nextRound, userId]);
-
-    const incrementScore = (winner: string) => {
-        const myNewScore = winner === userId ? myScore + 1 : myScore;
-        const opponentNewScore =
-            winner !== userId ? opponentScore + 1 : opponentScore;
-
-        if (hasWinner(myNewScore, opponentNewScore)) {
-            endShowdown(myNewScore);
-        } else {
-            setMyScore(myNewScore);
-            setOpponentScore(opponentNewScore);
-        }
+    const handleRoundCompletedEvent = (data: RoundCompletedEventResponse) => {
+        onRoundComplete(data);
     };
 
-    const hasWinner = (myNewScore: number, opponentNewScore: number) => {
-        return myNewScore === 3 || opponentNewScore === 3;
+    const handleShowdownCompletedEvent = (
+        data: ShowdownCompletedEventResponse
+    ) => {
+        onShowdownComplete(data);
     };
 
-    const submitPerformance = async (duration: number) => {
+    const onRoundComplete = async (data: RoundCompletedEventResponse) => {
+        incrementScore(data.combatants);
+        setTechnique("");
+        await sleep(3000);
+        setTechnique(nextRound());
+        setCanInput(true);
+    };
+
+    const onShowdownComplete = async (data: ShowdownCompletedEventResponse) => {
+        // show some kind of result
+        const winner = data.winner;
+        console.log("winner", winner);
+
+        sleep(2000);
+        setGameState(GAME_STATE.LOBBY);
+    };
+
+    // useEffect(() => {
+    //     onRoundComplete.current = async (data: any) => {
+    //         incrementScore(data.winner);
+    //         setTechnique("");
+    //         await sleep(3000);
+    //         setTechnique(nextRound());
+    //         setCanInput(true);
+    //     };
+    // }, [myScore, opponentScore, technique, canInput, nextRound, userId]);
+
+    const incrementScore = (
+        combatants: Array<{
+            userId: string;
+            duration: number;
+            winner: boolean;
+        }>
+    ) => {
+        const myNewScore = combatants.find((c) => c.userId === userId)?.winner
+            ? 1
+            : 0;
+        const opponentNewScore = combatants.find((c) => c.userId !== userId)
+            ?.winner
+            ? 1
+            : 0;
+        setMyScore(myScore + myNewScore);
+        setOpponentScore(opponentScore + opponentNewScore);
+    };
+
+    const handleSubmitPerformance = async (duration: number) => {
         try {
-            await postSubmitPerformance(userId, duration, "asd", "dsa");
+            await submitPerformance(
+                userId,
+                duration,
+                showdownId,
+                getCurrentRound().id
+            );
             setCanInput(false);
         } catch (e) {
             console.log(e);
         }
-    };
-
-    const endShowdown = (myNewScore: number) => {
-        console.log(myNewScore === 3 ? "You win!" : "You lose...");
-        setGameState(GAME_STATE.SHOWDOWN_RESULT);
     };
 
     return (
@@ -88,7 +121,7 @@ const Showdown = () => {
             <p>{`Opp score: ${opponentScore}`}</p>
 
             {canInput && (
-                <PerformanceInput submitPerformance={submitPerformance} />
+                <PerformanceInput submitPerformance={handleSubmitPerformance} />
             )}
         </div>
     );
