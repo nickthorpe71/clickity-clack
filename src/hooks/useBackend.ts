@@ -1,121 +1,34 @@
-import { useRef, useContext } from "react";
-import { sample, startCase, range } from "lodash";
+import { useContext } from "react";
 
 // state
 import { GameManager } from "../context/gameManager";
 
 // types
-import { GameManagerContextType } from "../types/gameManager.d";
 import {
+    GameManagerContextType,
     Showdown,
     JoinShowdownAPIResponse,
     RoundCompletedEventResponse,
     ShowdownCompletedEventResponse,
 } from "../types";
 
-// utils
-import { sleep } from "../utils";
-
 // hooks
 import usePusher from "./usePusher";
 
 // services
 import API from "../services/api";
-
-const adjectives = [
-    "angry",
-    "drunken",
-    "clever",
-    "brave",
-    "dark",
-    "elegant",
-    "flaming",
-    "sleeping",
-    "enlightened",
-];
-const nouns = [
-    "phoenix",
-    "boar",
-    "hawk",
-    "bear",
-    "tiger",
-    "dragon",
-    "king",
-    "queen",
-    "berserker",
-    "monkey",
-];
-const verbs = [
-    "slaps",
-    "charges",
-    "dives",
-    "leaps",
-    "waits",
-    "strikes",
-    "kicks",
-    "tumbles",
-    "strides",
-];
-const adverbs = [
-    "like water",
-    "silently",
-    "aggressively",
-    "patiently",
-    "with determination",
-    "beautifully",
-    "fiercely",
-    "hastily",
-    "keenly",
-    "softly",
-];
+import MockAPI from "../services/mockAPI";
 
 function useBackend(isAI: boolean = false) {
     const { setUserId } = useContext(GameManager) as GameManagerContextType;
     const { subscribe } = usePusher();
-
-    const mockRoundSubs = useRef<{ [key: string]: (data: any) => void }>({});
-    const mockShowdownCompleteSubs = useRef<{
-        [key: string]: (data: any) => void;
-    }>({});
-
-    const createMockTechnique = (): string => {
-        return `${startCase(sample(adjectives))} ${sample(nouns)} ${sample(
-            verbs
-        )} ${sample(adverbs)}!`;
-    };
-
-    const createMockRound = () => {
-        return {
-            id: "rnd-1",
-            technique: createMockTechnique(),
-        };
-    };
-
-    const mockCreateShowdown = async (
-        userId: string,
-        callback: (data: any) => void
-    ) => {
-        await sleep(1500);
-        callback({
-            id: "shd-1",
-            rounds: range(5).map(createMockRound),
-            combatants: [userId, "comb-2"],
-        });
-    };
-
-    const mockRound = async (showdownId: string, userId: string) => {
-        await sleep(2000);
-        mockRoundSubs.current[showdownId]({
-            winner: Math.random() < 0.5 ? userId : "comb-2",
-        });
-    };
 
     const joinShowdown = async (
         userId: string,
         callback: (data: Showdown) => void
     ) => {
         if (isAI) {
-            mockCreateShowdown(userId, callback);
+            MockAPI.startMockShowdown(userId, callback);
             return;
         }
         try {
@@ -123,7 +36,11 @@ function useBackend(isAI: boolean = false) {
                 await API.joinShowdown(userId);
             if (res.data.userId !== userId) setUserId(res.data.userId);
 
-            subscribe(`showdown.${res.data.showdownId}.ready`, callback);
+            subscribe(
+                `showdown.${res.data.showdownId}.ready`,
+                "ShowdownReady",
+                callback
+            );
         } catch (err) {
             console.error(err);
         }
@@ -137,19 +54,23 @@ function useBackend(isAI: boolean = false) {
         ) => void
     ) => {
         if (isAI) {
-            mockRoundSubs.current[showdownId] = roundCompletedCallback;
-            mockShowdownCompleteSubs.current[showdownId] =
-                showdownCompletedCallback;
+            MockAPI.subscribeToMockEvents(
+                showdownId,
+                roundCompletedCallback,
+                showdownCompletedCallback
+            );
             return;
         }
 
         subscribe(
             `showdown.${showdownId}.round.completed`,
+            "RoundCompleted",
             roundCompletedCallback
         );
 
         subscribe(
             `showdown.${showdownId}.completed`,
+            "ShowdownCompleted",
             showdownCompletedCallback
         );
     };
@@ -161,7 +82,7 @@ function useBackend(isAI: boolean = false) {
         roundId: string
     ) => {
         if (isAI) {
-            mockRound(showdownId, userId);
+            MockAPI.runMockRound(showdownId, userId, duration);
             return;
         }
         try {

@@ -12,7 +12,7 @@ import Showdown from "./views/Showdown/Showdown";
 import ShowdownResult from "./views/ShowdownResult/ShowdownResult";
 
 const vignette =
-    'after:content-[""] after:absolute after:top-0 after:left-0 after:w-full after:h-full after:shadow-vignette';
+    'after:content-[""] after:absolute after:top-0 after:left-0 after:w-full after:h-full after:shadow-vignette after:z-game-midground';
 
 const App = () => {
     const { gameState } = useContext(GameManager) as GameManagerContextType;
@@ -30,7 +30,7 @@ const App = () => {
 
     return (
         <div
-            className={`h-screen w-screen flex flex-col gap-4 items-center justify-center bg-sunset bg-center bg-cover bg-no-repeat ${vignette}`}
+            className={`h-screen w-screen flex flex-col gap-4 items-center justify-center bg-sunset bg-center bg-cover bg-no-repeat ${vignette} z-game-background`}
         >
             {renderCurrentView()}
         </div>

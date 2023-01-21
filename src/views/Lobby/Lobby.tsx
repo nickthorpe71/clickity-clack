@@ -15,7 +15,7 @@ const Lobby = () => {
         GameManager
     ) as GameManagerContextType;
 
-    const { joinShowdown } = useBackend();
+    const { joinShowdown } = useBackend(true);
 
     const join = async () => {
         joinShowdown(userId, (data: Showdown) => {
@@ -29,7 +29,7 @@ const Lobby = () => {
     };
 
     return (
-        <div>
+        <div className='z-hud-background'>
             <h1>Lobby</h1>
             <div className='text-slate-50 h-min'>
                 <button

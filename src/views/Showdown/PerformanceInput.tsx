@@ -9,7 +9,7 @@ const PerformanceInput: FC<PerformanceInputProps> = ({ submitPerformance }) => {
 
     const submitForm = async (e: FormEvent) => {
         e.preventDefault();
-        submitPerformance(10);
+        submitPerformance(2000);
         setPerformanceText("");
     };
 

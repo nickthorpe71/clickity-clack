@@ -8,6 +8,7 @@ function usePusher() {
     // Initialize Pusher
     useEffect(() => {
         Pusher.logToConsole = false;
+        if (pusher) return;
         setPusher(
             new Pusher("a97e1f5ac552a37ff7fe", {
                 cluster: "us2",
@@ -18,10 +19,14 @@ function usePusher() {
         return () => {
             subscriptions.forEach((channel) => pusher.unsubscribe(channel));
         };
-    }, []);
+    }, [pusher, subscriptions]);
 
-    const subscribe = (channel: string, callback: (data: any) => void) => {
-        pusher.subscribe(channel).bind(`sub-${channel}`, callback);
+    const subscribe = (
+        channel: string,
+        event: string,
+        callback: (data: any) => void
+    ) => {
+        pusher.subscribe(channel).bind(event, callback);
         setSubscriptions([...subscriptions, channel]);
     };
 
