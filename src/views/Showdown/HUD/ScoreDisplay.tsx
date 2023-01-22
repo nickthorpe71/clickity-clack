@@ -7,9 +7,9 @@ interface ScoreDisplayProps {
 
 const ScoreDisplay: FC<ScoreDisplayProps> = ({ label, score }) => {
     return (
-        <div className='text-center'>
+        <div className='text-center w-28'>
             <p>{label}</p>
-            <p>{score}</p>
+            <p className='text-red-600 text-8xl'>{score}</p>
         </div>
     );
 };

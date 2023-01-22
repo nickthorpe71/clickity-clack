@@ -9,6 +9,7 @@ export interface JoinShowdownAPIResponse {
 }
 
 export interface RoundCompletedEventResponse {
+    showdownCompleted: boolean;
     combatants: Array<{
         userId: string;
         duration: number;

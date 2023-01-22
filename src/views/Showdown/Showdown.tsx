@@ -34,8 +34,8 @@ const Showdown = () => {
     );
     const [myScore, setMyScore] = useState<number>(0);
     const [opponentScore, setOpponentScore] = useState<number>(0);
-    const [myDuration, setMyDuration] = useState<string>("");
-    const [opponentDuration, setOpponentDuration] = useState<string>("");
+    const [myDuration, setMyDuration] = useState<number>(0);
+    const [opponentDuration, setOpponentDuration] = useState<number>(0);
     const [technique, setTechnique] = useState<string>("");
     const [canInput, setCanInput] = useState<boolean>(false);
     const onRoundComplete = useRef<(data: any) => Promise<void>>(
@@ -55,11 +55,13 @@ const Showdown = () => {
             setDurations(data.combatants);
             await sleep(2000);
             incrementScore(data.combatants);
-            await sleep(1000);
-            resetDurations();
-            startRound(nextRound());
+            await sleep(3000);
+            if (!data.showdownCompleted) {
+                console.log("start round", showdownState);
+                startRound(nextRound());
+            }
         };
-    }, [myScore, opponentScore]);
+    }, [myScore, opponentScore, showdownState, technique]);
 
     const startRound = async (technique: string) => {
         setShowdownState(SHOWDOWN_STATE.ROUND_FMV);
@@ -84,11 +86,12 @@ const Showdown = () => {
     };
 
     const onShowdownComplete = async (data: ShowdownCompletedEventResponse) => {
-        setShowdownState(SHOWDOWN_STATE.ROUND_COMPLETED);
         const winner = data.winner;
-        console.log("winner", winner);
+        setTechnique("");
+        setShowdownState(SHOWDOWN_STATE.SHOWDOWN_COMPLETED);
+    };
 
-        sleep(2000);
+    const exitShowdown = () => {
         setGameState(GAME_STATE.LOBBY);
     };
 
@@ -105,13 +108,8 @@ const Showdown = () => {
         const opponentDuration = combatants.find(
             (c) => c.userId !== userId
         )?.duration;
-        setMyDuration(String(myDuration));
-        setOpponentDuration(String(opponentDuration));
-    };
-
-    const resetDurations = () => {
-        setMyDuration("");
-        setOpponentDuration("");
+        setMyDuration(myDuration || 50000);
+        setOpponentDuration(opponentDuration || 50000);
     };
 
     const incrementScore = (
@@ -150,6 +148,7 @@ const Showdown = () => {
                 myDuration={myDuration}
                 opponentDuration={opponentDuration}
                 technique={technique}
+                showdownState={showdownState}
             />
 
             <ShowdownScene showdownState={showdownState} />
@@ -157,6 +156,9 @@ const Showdown = () => {
                 technique={technique}
                 canInput={canInput}
                 submitPerformance={handleSubmitPerformance}
+                showdownState={showdownState}
+                scoreDifference={myScore - opponentScore}
+                exitShowdown={exitShowdown}
             />
         </div>
     );

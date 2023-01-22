@@ -12,6 +12,18 @@ import { sleep } from "../utils";
 const adjectives = [
     "angry",
     "drunken",
+    "ancient",
+    "fierce",
+    "flying",
+    "sneaky",
+    "sly",
+    "mystic",
+    "savage",
+    "mad",
+    "crazy",
+    "wild",
+    "furious",
+    "giant",
     "clever",
     "brave",
     "dark",
@@ -22,6 +34,42 @@ const adjectives = [
 ];
 const nouns = [
     "phoenix",
+    "eagle",
+    "wolf",
+    "lion",
+    "toad",
+    "snake",
+    "fox",
+    "tortoise",
+    "turtle",
+    "crane",
+    "crab",
+    "frog",
+    "knight",
+    "samurai",
+    "ninja",
+    "warrior",
+    "mage",
+    "wizard",
+    "warlock",
+    "witch",
+    "sorcerer",
+    "sorceress",
+    "shaman",
+    "lord",
+    "lady",
+    "crone",
+    "smith",
+    "thief",
+    "rogue",
+    "assassin",
+    "hunter",
+    "ranger",
+    "druid",
+    "bard",
+    "cleric",
+    "paladin",
+    "monk",
     "boar",
     "hawk",
     "bear",
@@ -34,23 +82,93 @@ const nouns = [
 ];
 const verbs = [
     "slaps",
+    "attacks",
+    "laments",
+    "cries",
+    "screams",
+    "sighs",
+    "cries",
+    "wanders",
+    "punches",
     "charges",
+    "stabs",
     "dives",
+    "dodges",
+    "dashes",
+    "jumps",
+    "lunges",
+    "slices",
+    "slashes",
     "leaps",
     "waits",
+    "blocks",
+    "parries",
     "strikes",
+    "smashes",
+    "bashes",
+    "bites",
+    "plots",
+    "stalks",
+    "stings",
+    "plans",
     "kicks",
     "tumbles",
     "strides",
 ];
 const adverbs = [
     "like water",
+    "like smoke",
+    "like a shadow",
+    "like a cat",
+    "like fire",
+    "like ice",
+    "like the wind",
+    "like a storm",
+    "like a hurricane",
+    "like a tornado",
+    "like a whirlwind",
     "silently",
+    "quickly",
+    "slowly",
+    "swiftly",
+    "elegantly",
     "aggressively",
+    "defensively",
+    "offensively",
+    "defiantly",
+    "boldly",
+    "courageously",
+    "bravely",
+    "fearlessly",
+    "recklessly",
     "patiently",
     "with determination",
+    "with confidence",
+    "with skill",
+    "with precision",
+    "with power",
+    "with strength",
+    "with speed",
+    "with agility",
+    "with grace",
+    "with fury",
     "beautifully",
     "fiercely",
+    "with grace",
+    "with fury",
+    "with passion",
+    "with love",
+    "with hate",
+    "with anger",
+    "with joy",
+    "with sadness",
+    "with fear",
+    "with courage",
+    "with bravery",
+    "with honor",
+    "with pride",
+    "with humility",
+    "with wisdom",
     "hastily",
     "keenly",
     "softly",
@@ -109,7 +227,20 @@ const runMockRound = async (
     // random between 1 and 10 seconds
     const opponentDuration = Math.floor(Math.random() * 10000) + 1000;
     const localUserWins = duration < opponentDuration;
+    const showdownCompleted = playerWins === 3 || opponentWins === 3;
+    if (localUserWins) playerWins++;
+    else opponentWins++;
+    if (showdownCompleted) {
+        const localUserWinsShowdown = playerWins === 3;
+        mockShowdownCompleteSubs[showdownId]({
+            winner: localUserWinsShowdown ? "player" : "opponent",
+        });
+        playerWins = 0;
+        opponentWins = 0;
+        return;
+    }
     mockRoundSubs[showdownId]({
+        showdownCompleted,
         combatants: [
             {
                 userId,
@@ -123,24 +254,6 @@ const runMockRound = async (
             },
         ],
     });
-    adjustScores(localUserWins, showdownId);
-};
-
-const adjustScores = (localUserWins: boolean, showdownId: string) => {
-    if (localUserWins) {
-        playerWins++;
-    } else {
-        opponentWins++;
-    }
-
-    if (playerWins === 3 || opponentWins === 3) {
-        const localUserWinsShowdown = playerWins === 3;
-        mockShowdownCompleteSubs[showdownId]({
-            winner: localUserWinsShowdown ? "player" : "opponent",
-        });
-        playerWins = 0;
-        opponentWins = 0;
-    }
 };
 
 const mockAPI = {

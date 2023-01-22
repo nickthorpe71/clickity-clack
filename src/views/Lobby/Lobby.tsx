@@ -10,6 +10,11 @@ import { GameManager } from "../../context/gameManager";
 // hooks
 import useBackend from "../../hooks/useBackend";
 
+// components
+import Sign from "../../components/Sign";
+import SignTitle from "../../components/SignTitle";
+import SignButton from "../../components/SignButton";
+
 const Lobby = () => {
     const { setGameState, setShowdownState } = useContext(
         GameManager
@@ -35,18 +40,11 @@ const Lobby = () => {
 
     return (
         <div className='z-hud-background'>
-            <h1>Lobby</h1>
-            {joining && <p>Joining...</p>}
-            {!joining && (
-                <div className='text-slate-50 h-min'>
-                    <button
-                        className='bg-gray-800 px-4 py-1 rounded-md'
-                        onClick={join}
-                    >
-                        Join Showdown
-                    </button>
-                </div>
-            )}
+            <Sign style={"p-20"}>
+                <SignTitle text='Lobby' />
+                {joining && <p>Joining...</p>}
+                {!joining && <SignButton text='Join Showdown' onClick={join} />}
+            </Sign>
         </div>
     );
 };

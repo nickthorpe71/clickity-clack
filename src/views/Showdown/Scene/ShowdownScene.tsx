@@ -12,7 +12,7 @@ interface ShowdownSceneProps {
 
 const ShowdownScene: FC<ShowdownSceneProps> = ({ showdownState }) => {
     return (
-        <div className='w-full flex h-4/6 justify-between items-end z-game-midground py-12 px-40'>
+        <div className='w-full flex h-4/6 justify-between items-end z-game-midground py-12 px-[10vw]'>
             <img
                 className='max-h-52'
                 src={smilingSamuraiWinSprite}
