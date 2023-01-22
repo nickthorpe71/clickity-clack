@@ -5,36 +5,39 @@ interface PerformanceInputProps {
     submitPerformance: (duration: number) => void;
 }
 
-const PerformanceInput: FC<PerformanceInputProps> = ({ submitPerformance }) => {
+const PerformanceInput: FC<PerformanceInputProps> = ({
+    technique,
+    submitPerformance,
+}) => {
     const [performanceText, setPerformanceText] = useState("");
     const [startTime, setStartTime] = useState<number>(0);
 
-    // start timer when component is mounted
-    // stop timer when component is unmounted
     useEffect(() => {
         setStartTime(Date.now());
     }, []);
 
-    const submitForm = async (e: FormEvent) => {
-        e.preventDefault();
+    const submitTechnique = () => {
         const endTime = Date.now();
         const duration = endTime - startTime;
         submitPerformance(duration);
         setPerformanceText("");
     };
 
+    const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPerformanceText(e.currentTarget.value);
+        if (e.currentTarget.value === technique) submitTechnique();
+    };
+
     return (
-        <form onSubmit={submitForm}>
+        <div>
             <input
                 className='bg-gray-800 h-12 w-80 px-4 py-2 rounded-md text-slate-50'
                 autoFocus
                 value={performanceText}
                 placeholder='Perform your technique...'
-                onChange={(e) => {
-                    setPerformanceText(e.currentTarget.value);
-                }}
+                onChange={onInputChange}
             />
-        </form>
+        </div>
     );
 };
 

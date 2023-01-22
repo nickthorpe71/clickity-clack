@@ -26,7 +26,12 @@ const GameManagerProvider: FC<GameManagerProps> = ({ children }) => {
     };
 
     const nextRound = (): string => {
-        if (!rounds || rounds.current.length === 0) return "";
+        if (
+            !rounds ||
+            rounds.current.length === 0 ||
+            roundIndex.current >= rounds.current.length
+        )
+            return "";
         roundIndex.current += 1;
         return rounds.current[roundIndex.current].technique;
     };

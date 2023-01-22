@@ -3,26 +3,19 @@ import { FC } from "react";
 // components
 import PerformanceInput from "./PerformanceInput";
 
-interface ShowdownHUDProps {
-    myScore: number;
-    opponentScore: number;
+interface ShowdownBottomHUDProps {
     technique: string;
     canInput: boolean;
     submitPerformance: (duration: number) => void;
 }
 
-const ShowdownHUD: FC<ShowdownHUDProps> = ({
-    myScore,
-    opponentScore,
+const ShowdownBottomHUD: FC<ShowdownBottomHUDProps> = ({
     technique,
     canInput,
     submitPerformance,
 }) => {
     return (
-        <div>
-            <p>{`Technique: ${technique}`}</p>
-            <p>{`My score: ${myScore}`}</p>
-            <p>{`Opp score: ${opponentScore}`}</p>
+        <div className='w-full flex h-1/6 justify-center items-center z-hud-midground'>
             {canInput && (
                 <PerformanceInput
                     technique={technique}
@@ -33,4 +26,4 @@ const ShowdownHUD: FC<ShowdownHUDProps> = ({
     );
 };
 
-export default ShowdownHUD;
+export default ShowdownBottomHUD;

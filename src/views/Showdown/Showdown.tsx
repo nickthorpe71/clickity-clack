@@ -19,20 +19,23 @@ import useBackend from "../../hooks/useBackend";
 import { sleep } from "../../utils";
 
 // components
-import ShowdownHUD from "./HUD/ShowdownHUD";
+import ShowdownTopHUD from "./HUD/ShowdownTopHUD";
+import ShowdownBottomHUD from "./HUD/ShowdownBottomHUD";
 import ShowdownScene from "./Scene/ShowdownScene";
 
 const Showdown = () => {
     const { userId, nextRound, setGameState, getCurrentRound, showdownId } =
         useContext(GameManager) as GameManagerContextType;
 
-    const { submitPerformance, startShowdown } = useBackend(false);
+    const { submitPerformance, startShowdown } = useBackend(true);
 
     const [showdownState, setShowdownState] = useState<SHOWDOWN_STATE>(
         SHOWDOWN_STATE.NOT_STARTED
     );
     const [myScore, setMyScore] = useState<number>(0);
     const [opponentScore, setOpponentScore] = useState<number>(0);
+    const [myDuration, setMyDuration] = useState<string>("");
+    const [opponentDuration, setOpponentDuration] = useState<string>("");
     const [technique, setTechnique] = useState<string>("");
     const [canInput, setCanInput] = useState<boolean>(false);
     const onRoundComplete = useRef<(data: any) => Promise<void>>(
@@ -42,25 +45,29 @@ const Showdown = () => {
     useEffect(() => {
         console.log("start showdown");
         startShowdown(handleRoundCompletedEvent, handleShowdownCompletedEvent);
-        startShowdownRound();
+        startRound(getCurrentRound().technique);
     }, []);
 
     useEffect(() => {
         onRoundComplete.current = async (data: RoundCompletedEventResponse) => {
-            console.log("on round complete", data);
-            incrementScore(data.combatants);
-            setTechnique("");
-            await sleep(3000);
-            setTechnique(nextRound());
-            setCanInput(true);
             setShowdownState(SHOWDOWN_STATE.ROUND_COMPLETED);
+            setTechnique("");
+            setDurations(data.combatants);
+            await sleep(2000);
+            incrementScore(data.combatants);
+            await sleep(1000);
+            resetDurations();
+            startRound(nextRound());
         };
     }, [myScore, opponentScore]);
 
-    const startShowdownRound = async () => {
-        await sleep(2000);
+    const startRound = async (technique: string) => {
+        setShowdownState(SHOWDOWN_STATE.ROUND_FMV);
+        setShowdownState(SHOWDOWN_STATE.ANTICIPATION);
+        const waitTime = Math.random() * 14000 + 1000;
+        await sleep(waitTime);
         setCanInput(true);
-        setTechnique(getCurrentRound().technique);
+        setTechnique(technique);
         setShowdownState(SHOWDOWN_STATE.SUBMITTING_PERFORMANCE);
     };
 
@@ -83,6 +90,28 @@ const Showdown = () => {
 
         sleep(2000);
         setGameState(GAME_STATE.LOBBY);
+    };
+
+    const setDurations = (
+        combatants: Array<{
+            userId: string;
+            duration: number;
+            winner: boolean;
+        }>
+    ) => {
+        const myDuration = combatants.find(
+            (c) => c.userId === userId
+        )?.duration;
+        const opponentDuration = combatants.find(
+            (c) => c.userId !== userId
+        )?.duration;
+        setMyDuration(String(myDuration));
+        setOpponentDuration(String(opponentDuration));
+    };
+
+    const resetDurations = () => {
+        setMyDuration("");
+        setOpponentDuration("");
     };
 
     const incrementScore = (
@@ -114,16 +143,21 @@ const Showdown = () => {
     };
 
     return (
-        <div className='z-hud-background w-full h-full'>
-            <h1>Showdown</h1>
-            <ShowdownHUD
+        <div className='z-hud-background w-full h-5/6'>
+            <ShowdownTopHUD
                 myScore={myScore}
                 opponentScore={opponentScore}
+                myDuration={myDuration}
+                opponentDuration={opponentDuration}
+                technique={technique}
+            />
+
+            <ShowdownScene showdownState={showdownState} />
+            <ShowdownBottomHUD
                 technique={technique}
                 canInput={canInput}
                 submitPerformance={handleSubmitPerformance}
             />
-            <ShowdownScene showdownState={showdownState} />
         </div>
     );
 };

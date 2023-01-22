@@ -83,7 +83,7 @@ const startMockShowdown = async (
     userId: string,
     callback: (data: any) => void
 ) => {
-    await sleep(1500);
+    await sleep(100);
     callback({
         id: "shd-1",
         rounds: range(5).map((i) => createMockRound(i)),
