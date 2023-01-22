@@ -34,28 +34,45 @@ const Showdown = () => {
     );
     const [myScore, setMyScore] = useState<number>(0);
     const [opponentScore, setOpponentScore] = useState<number>(0);
-    const [myDuration, setMyDuration] = useState<number>(0);
-    const [opponentDuration, setOpponentDuration] = useState<number>(0);
+    const [myDuration, setMyDuration] = useState<number | null>(0);
+    const [opponentDuration, setOpponentDuration] = useState<number | null>(0);
     const [technique, setTechnique] = useState<string>("");
     const [canInput, setCanInput] = useState<boolean>(false);
-    const onRoundComplete = useRef<(data: any) => Promise<void>>(
-        async (_: any) => {}
-    );
+    const onRoundComplete = useRef<
+        (data: RoundCompletedEventResponse) => Promise<void>
+    >(async (_: any) => {});
+    const onShowdownComplete = useRef<
+        (data: ShowdownCompletedEventResponse) => Promise<void>
+    >(async (_: any) => {});
 
     useEffect(() => {
         console.log("start showdown");
         startShowdown(handleRoundCompletedEvent, handleShowdownCompletedEvent);
         startRound(getCurrentRound().technique);
+
+        return () => {
+            resetAllState();
+        };
     }, []);
+
+    const resetAllState = () => {
+        setShowdownState(SHOWDOWN_STATE.NOT_STARTED);
+        setMyScore(0);
+        setOpponentScore(0);
+        setMyDuration(null);
+        setOpponentDuration(null);
+        setTechnique("");
+        setCanInput(false);
+    };
 
     useEffect(() => {
         onRoundComplete.current = async (data: RoundCompletedEventResponse) => {
             setShowdownState(SHOWDOWN_STATE.ROUND_COMPLETED);
             setTechnique("");
             setDurations(data.combatants);
-            await sleep(2000);
+            await sleep(1700);
             incrementScore(data.combatants);
-            await sleep(3000);
+            await sleep(2600);
             if (!data.showdownCompleted) {
                 console.log("start round", showdownState);
                 startRound(nextRound());
@@ -63,10 +80,25 @@ const Showdown = () => {
         };
     }, [myScore, opponentScore, showdownState, technique]);
 
+    useEffect(() => {
+        onShowdownComplete.current = async (
+            data: ShowdownCompletedEventResponse
+        ) => {
+            await sleep(2000);
+            const winner = data.winner;
+            setTechnique("");
+            setMyDuration(null);
+            setOpponentDuration(null);
+            if (winner === userId) setMyScore(myScore + 1);
+            else setOpponentScore(opponentScore + 1);
+            setShowdownState(SHOWDOWN_STATE.SHOWDOWN_COMPLETED);
+        };
+    }, [myScore, opponentScore, showdownState, technique]);
+
     const startRound = async (technique: string) => {
         setShowdownState(SHOWDOWN_STATE.ROUND_FMV);
         setShowdownState(SHOWDOWN_STATE.ANTICIPATION);
-        const waitTime = Math.random() * 14000 + 1000;
+        const waitTime = Math.random() * 14000;
         await sleep(waitTime);
         setCanInput(true);
         setTechnique(technique);
@@ -82,13 +114,7 @@ const Showdown = () => {
         data: ShowdownCompletedEventResponse
     ) => {
         console.log("showdown complete", data);
-        onShowdownComplete(data);
-    };
-
-    const onShowdownComplete = async (data: ShowdownCompletedEventResponse) => {
-        const winner = data.winner;
-        setTechnique("");
-        setShowdownState(SHOWDOWN_STATE.SHOWDOWN_COMPLETED);
+        onShowdownComplete.current(data);
     };
 
     const exitShowdown = () => {

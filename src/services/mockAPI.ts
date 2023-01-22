@@ -31,6 +31,11 @@ const adjectives = [
     "flaming",
     "sleeping",
     "enlightened",
+    "frozen",
+    "stone",
+    "winter",
+    "summer",
+    "subterranean",
 ];
 const nouns = [
     "phoenix",
@@ -133,9 +138,6 @@ const adverbs = [
     "swiftly",
     "elegantly",
     "aggressively",
-    "defensively",
-    "offensively",
-    "defiantly",
     "boldly",
     "courageously",
     "bravely",
@@ -153,6 +155,7 @@ const adverbs = [
     "with grace",
     "with fury",
     "beautifully",
+    "brutally",
     "fiercely",
     "with grace",
     "with fury",
@@ -227,33 +230,33 @@ const runMockRound = async (
     // random between 1 and 10 seconds
     const opponentDuration = Math.floor(Math.random() * 10000) + 1000;
     const localUserWins = duration < opponentDuration;
-    const showdownCompleted = playerWins === 3 || opponentWins === 3;
     if (localUserWins) playerWins++;
     else opponentWins++;
+    const showdownCompleted = playerWins === 3 || opponentWins === 3;
     if (showdownCompleted) {
         const localUserWinsShowdown = playerWins === 3;
         mockShowdownCompleteSubs[showdownId]({
-            winner: localUserWinsShowdown ? "player" : "opponent",
+            winner: localUserWinsShowdown ? userId : "opponent",
         });
         playerWins = 0;
         opponentWins = 0;
         return;
-    }
-    mockRoundSubs[showdownId]({
-        showdownCompleted,
-        combatants: [
-            {
-                userId,
-                duration,
-                winner: localUserWins,
-            },
-            {
-                userId: "comb-2",
-                duration: opponentDuration,
-                winner: !localUserWins,
-            },
-        ],
-    });
+    } else
+        mockRoundSubs[showdownId]({
+            showdownCompleted,
+            combatants: [
+                {
+                    userId,
+                    duration,
+                    winner: localUserWins,
+                },
+                {
+                    userId: "comb-2",
+                    duration: opponentDuration,
+                    winner: !localUserWins,
+                },
+            ],
+        });
 };
 
 const mockAPI = {
