@@ -20,6 +20,9 @@ module.exports = {
                 "hud-midground": "4",
                 "hud-foreground": "5",
             },
+            scale: {
+                "-1": "-1",
+            },
         },
         fontFamily: {
             display: ["Lemonada", "cursive"],

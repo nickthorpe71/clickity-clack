@@ -6,7 +6,7 @@ interface SignTitleProps {
 }
 
 const SignTitle: FC<SignTitleProps> = ({ text, style = "" }) => {
-    return <h1 className={`text-red-500 text-4xl ${style}`}>{text}</h1>;
+    return <h1 className={`text-red-500 text-4xl select-none ${style}`}>{text}</h1>;
 };
 
 export default SignTitle;

@@ -9,7 +9,7 @@ interface SignButtonProps {
 const SignButton: FC<SignButtonProps> = ({ text, onClick, style = "" }) => {
     return (
         <button
-            className={`font-semibold text-slate-50 ${style}`}
+            className={`font-semibold text-slate-50 select-none ${style}`}
             onClick={onClick}
         >
             {text}
