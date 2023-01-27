@@ -1,6 +1,7 @@
 import { FC } from "react";
 
 import { SHOWDOWN_STATE } from "../../../types";
+import ShowdownFMV from "./ShowdownFMV";
 
 // assets
 
@@ -30,9 +31,10 @@ const ShowdownScene: FC<ShowdownSceneProps> = ({ showdownState }) => {
             />
             <img
                 className='max-h-60'
-                src={bladeMasterWinSprite}
+                src={bladeMasterIdleSprite}
                 alt='blade master'
             />
+            <ShowdownFMV showdownState={showdownState} />
         </div>
     );
 };
