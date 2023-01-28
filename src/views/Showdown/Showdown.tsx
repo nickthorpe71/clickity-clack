@@ -38,6 +38,7 @@ const Showdown = () => {
     const [opponentDuration, setOpponentDuration] = useState<number | null>(0);
     const [technique, setTechnique] = useState<string>("");
     const [canInput, setCanInput] = useState<boolean>(false);
+    const [winner, setWinner] = useState<"me" | "opponent" | null>(null);
     const onRoundComplete = useRef<
         (data: RoundCompletedEventResponse) => Promise<void>
     >(async (_: any) => {});
@@ -67,12 +68,14 @@ const Showdown = () => {
 
     useEffect(() => {
         onRoundComplete.current = async (data: RoundCompletedEventResponse) => {
-            setShowdownState(SHOWDOWN_STATE.ROUND_COMPLETED);
+            // setShowdownState(SHOWDOWN_STATE.ROUND_COMPLETED);
             setTechnique("");
             setDurations(data.combatants);
             await sleep(1700);
             incrementScore(data.combatants);
-            await sleep(2600);
+            updateWinner(data.combatants);
+            setShowdownState(SHOWDOWN_STATE.ROUND_COMPLETED);
+            await sleep(3300);
             if (!data.showdownCompleted) {
                 console.log("start round", showdownState);
                 startRound(nextRound());
@@ -91,17 +94,18 @@ const Showdown = () => {
             setOpponentDuration(null);
             if (winner === userId) setMyScore(myScore + 1);
             else setOpponentScore(opponentScore + 1);
+            setWinner(winner === userId ? "me" : "opponent");
             setShowdownState(SHOWDOWN_STATE.SHOWDOWN_COMPLETED);
         };
     }, [myScore, opponentScore, showdownState, technique]);
 
     const startRound = async (technique: string) => {
         setShowdownState(SHOWDOWN_STATE.ANTICIPATION);
-        await sleep(1500);
+        await sleep(1200);
         setShowdownState(SHOWDOWN_STATE.ROUND_FMV);
-        await sleep(4000);
+        await sleep(3000);
         setShowdownState(SHOWDOWN_STATE.ANTICIPATION);
-        const waitTime = Math.random() * 14000;
+        const waitTime = Math.random() * 10000;
         await sleep(waitTime);
         setCanInput(true);
         setTechnique(technique);
@@ -139,6 +143,15 @@ const Showdown = () => {
         )?.duration;
         setMyDuration(myDuration || 50000);
         setOpponentDuration(opponentDuration || 50000);
+    };
+
+    const updateWinner = (
+        combatants: Array<{ userId: string; winner: boolean }>
+    ) => {
+        const winner = combatants.find((c) => c.winner)?.userId;
+        if (!winner) setWinner(null);
+        else if (winner === userId) setWinner("me");
+        else setWinner("opponent");
     };
 
     const incrementScore = (
@@ -180,7 +193,7 @@ const Showdown = () => {
                 showdownState={showdownState}
             />
 
-            <ShowdownScene showdownState={showdownState} />
+            <ShowdownScene showdownState={showdownState} winner={winner} />
             <ShowdownBottomHUD
                 technique={technique}
                 canInput={canInput}

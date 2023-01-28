@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
 
 import { SHOWDOWN_STATE } from "../../../types";
 import ShowdownFMV from "./ShowdownFMV";
@@ -19,19 +19,83 @@ import bladeMasterLoseSprite from "../../../images/blade-master/blade-master-los
 
 interface ShowdownSceneProps {
     showdownState: SHOWDOWN_STATE;
+    winner: "me" | "opponent" | null;
 }
 
-const ShowdownScene: FC<ShowdownSceneProps> = ({ showdownState }) => {
+enum CHARACTER_STATE {
+    IDLE,
+    ATTACK,
+    WIN,
+    LOSE,
+}
+
+const ShowdownScene: FC<ShowdownSceneProps> = ({ showdownState, winner }) => {
+    const [myCharacterState, setMyCharacterState] = useState<CHARACTER_STATE>(
+        CHARACTER_STATE.IDLE
+    );
+    const [opponentCharacterState, setOpponentCharacterState] =
+        useState<CHARACTER_STATE>(CHARACTER_STATE.IDLE);
+
+    const smilingSamuraiSpriteMap = {
+        [CHARACTER_STATE.IDLE]: smilingSamuraiIdleSprite,
+        [CHARACTER_STATE.ATTACK]: smilingSamuraiAttackSprite,
+        [CHARACTER_STATE.WIN]: smilingSamuraiWinSprite,
+        [CHARACTER_STATE.LOSE]: smilingSamuraiLoseSprite,
+    };
+
+    const bladeMasterSpriteMap = {
+        [CHARACTER_STATE.IDLE]: bladeMasterIdleSprite,
+        [CHARACTER_STATE.ATTACK]: bladeMasterAttackSprite,
+        [CHARACTER_STATE.WIN]: bladeMasterWinSprite,
+        [CHARACTER_STATE.LOSE]: bladeMasterLoseSprite,
+    };
+
+    useEffect(() => {
+        switch (showdownState) {
+            case SHOWDOWN_STATE.ROUND_FMV:
+                setMyCharacterState(CHARACTER_STATE.IDLE);
+                setOpponentCharacterState(CHARACTER_STATE.IDLE);
+                break;
+            case SHOWDOWN_STATE.WAITING_FOR_OPPONENT:
+                setMyCharacterState(CHARACTER_STATE.ATTACK);
+                setOpponentCharacterState(CHARACTER_STATE.ATTACK);
+                break;
+            case SHOWDOWN_STATE.ROUND_COMPLETED ||
+                SHOWDOWN_STATE.SHOWDOWN_COMPLETED:
+                setMyCharacterState(
+                    winner === "me" ? CHARACTER_STATE.WIN : CHARACTER_STATE.LOSE
+                );
+                setOpponentCharacterState(
+                    winner === "opponent"
+                        ? CHARACTER_STATE.WIN
+                        : CHARACTER_STATE.LOSE
+                );
+                break;
+            default:
+                setMyCharacterState(CHARACTER_STATE.IDLE);
+                setOpponentCharacterState(CHARACTER_STATE.IDLE);
+                break;
+        }
+    }, [showdownState, winner]);
+
+    const getCharacterPosition = () => {
+        return myCharacterState === CHARACTER_STATE.IDLE
+            ? "px-[10vw]"
+            : "flex-row-reverse px-[26vw]";
+    };
+
     return (
-        <div className='w-full flex h-4/6 justify-between items-end z-game-midground py-12 px-[10vw]'>
+        <div
+            className={`w-full flex h-4/6 justify-between items-end z-game-midground py-12 ${getCharacterPosition()}`}
+        >
             <img
                 className='max-h-52 scale-x-[-1]'
-                src={smilingSamuraiIdleSprite}
+                src={smilingSamuraiSpriteMap[myCharacterState]}
                 alt='smiling samurai'
             />
             <img
                 className='max-h-60'
-                src={bladeMasterIdleSprite}
+                src={bladeMasterSpriteMap[opponentCharacterState]}
                 alt='blade master'
             />
 

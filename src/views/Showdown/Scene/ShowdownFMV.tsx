@@ -21,7 +21,7 @@ const ShowdownScene = () => {
     const delaySequence = async () => {
         await sleep(1000);
         setPortraitTrigger(true);
-        await sleep(2700);
+        await sleep(1700);
         setFadeOutTrigger(true);
     };
 
