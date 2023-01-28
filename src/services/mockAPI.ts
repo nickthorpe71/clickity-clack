@@ -228,7 +228,7 @@ const runMockRound = async (
 ) => {
     await sleep(2000);
     // random between 1 and 10 seconds
-    const opponentDuration = Math.floor(Math.random() * 10000) + 1000;
+    const opponentDuration = Math.floor(Math.random() * 9000) + 2000;
     const localUserWins = duration < opponentDuration;
     if (localUserWins) playerWins++;
     else opponentWins++;

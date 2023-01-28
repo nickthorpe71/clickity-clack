@@ -96,7 +96,10 @@ const Showdown = () => {
     }, [myScore, opponentScore, showdownState, technique]);
 
     const startRound = async (technique: string) => {
+        setShowdownState(SHOWDOWN_STATE.ANTICIPATION);
+        await sleep(1500);
         setShowdownState(SHOWDOWN_STATE.ROUND_FMV);
+        await sleep(4000);
         setShowdownState(SHOWDOWN_STATE.ANTICIPATION);
         const waitTime = Math.random() * 14000;
         await sleep(waitTime);

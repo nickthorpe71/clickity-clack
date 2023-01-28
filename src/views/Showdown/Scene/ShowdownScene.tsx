@@ -34,7 +34,8 @@ const ShowdownScene: FC<ShowdownSceneProps> = ({ showdownState }) => {
                 src={bladeMasterIdleSprite}
                 alt='blade master'
             />
-            <ShowdownFMV showdownState={showdownState} />
+
+            {showdownState === SHOWDOWN_STATE.ROUND_FMV && <ShowdownFMV />}
         </div>
     );
 };
