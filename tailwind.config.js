@@ -7,7 +7,7 @@ module.exports = {
                 "10vw": "10vw",
             },
             backgroundImage: {
-                sunset: "url('images/sunset.png')",
+                sunset: "url('assets/images/sunset.png')",
             },
             boxShadow: {
                 vignette: "inset 0 0 100px 100px rgba(0, 0, 0, 0.6)",

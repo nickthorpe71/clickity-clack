@@ -1,6 +1,5 @@
 import { FC, ReactNode, useState, createContext, useRef } from "react";
-import { GAME_STATE, GameManagerContextType } from "../types/gameManager.d";
-import { Round, Combatant } from "../types/game.d";
+import { GAME_STATE, GameManagerContextType, Round, Combatant } from "../types";
 
 export const GameManager = createContext<GameManagerContextType | null>(null);
 

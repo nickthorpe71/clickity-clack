@@ -6,16 +6,16 @@ import ShowdownFMV from "./ShowdownFMV";
 // assets
 
 // smiling samurai images
-import smilingSamuraiIdleSprite from "../../../images/smiling-samurai/smiling-samurai-idle.png";
-import smilingSamuraiAttackSprite from "../../../images/smiling-samurai/smiling-samurai-attack.png";
-import smilingSamuraiWinSprite from "../../../images/smiling-samurai/smiling-samurai-win.png";
-import smilingSamuraiLoseSprite from "../../../images/smiling-samurai/smiling-samurai-lose.png";
+import smilingSamuraiIdleSprite from "../../../assets/images/smiling-samurai/smiling-samurai-idle.png";
+import smilingSamuraiAttackSprite from "../../../assets/images/smiling-samurai/smiling-samurai-attack.png";
+import smilingSamuraiWinSprite from "../../../assets/images/smiling-samurai/smiling-samurai-win.png";
+import smilingSamuraiLoseSprite from "../../../assets/images/smiling-samurai/smiling-samurai-lose.png";
 
 // blade master images
-import bladeMasterIdleSprite from "../../../images/blade-master/blade-master-idle.png";
-import bladeMasterAttackSprite from "../../../images/blade-master/blade-master-attack.png";
-import bladeMasterWinSprite from "../../../images/blade-master/blade-master-win.png";
-import bladeMasterLoseSprite from "../../../images/blade-master/blade-master-lose.png";
+import bladeMasterIdleSprite from "../../../assets/images/blade-master/blade-master-idle.png";
+import bladeMasterAttackSprite from "../../../assets/images/blade-master/blade-master-attack.png";
+import bladeMasterWinSprite from "../../../assets/images/blade-master/blade-master-win.png";
+import bladeMasterLoseSprite from "../../../assets/images/blade-master/blade-master-lose.png";
 
 interface ShowdownSceneProps {
     showdownState: SHOWDOWN_STATE;

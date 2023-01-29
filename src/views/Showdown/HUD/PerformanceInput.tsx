@@ -1,8 +1,5 @@
 import { useState, useCallback, FC, useEffect } from "react";
 
-// utils
-import { sleep } from "../../../utils";
-
 interface PerformanceInputProps {
     technique: string;
     submitPerformance: (duration: number) => void;
@@ -29,7 +26,15 @@ const PerformanceInput: FC<PerformanceInputProps> = ({
 
     useEffect(() => {
         setStartTime(Date.now());
-        timeoutCheck();
+
+        //wait 60 seconds then submit a 60sec performance
+        const timeoutCheckTimer = setTimeout(() => {
+            if (performanceText !== technique) submitTechnique();
+        }, 60000);
+
+        return () => {
+            clearTimeout(timeoutCheckTimer);
+        };
     }, []);
 
     useEffect(() => {
@@ -44,11 +49,6 @@ const PerformanceInput: FC<PerformanceInputProps> = ({
     useEffect(() => {
         if (performanceText === technique) submitTechnique();
     }, [performanceText]);
-
-    const timeoutCheck = async () => {
-        await sleep(60000);
-        if (performanceText !== technique) submitTechnique();
-    };
 
     const submitTechnique = () => {
         const endTime = Date.now();
