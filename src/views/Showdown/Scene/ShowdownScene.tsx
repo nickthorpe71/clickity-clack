@@ -80,8 +80,8 @@ const ShowdownScene: FC<ShowdownSceneProps> = ({ showdownState, winner }) => {
 
     const getCharacterPosition = () => {
         return myCharacterState === CHARACTER_STATE.IDLE
-            ? "px-[10vw]"
-            : "flex-row-reverse px-[26vw]";
+            ? "px-[16vw]"
+            : "flex-row-reverse px-[32vw]";
     };
 
     return (
@@ -89,12 +89,12 @@ const ShowdownScene: FC<ShowdownSceneProps> = ({ showdownState, winner }) => {
             className={`w-full flex h-4/6 justify-between items-end z-game-midground py-12 ${getCharacterPosition()}`}
         >
             <img
-                className='max-h-52 scale-x-[-1]'
+                className='max-h-52 scale-x-[-1] select-none'
                 src={smilingSamuraiSpriteMap[myCharacterState]}
                 alt='smiling samurai'
             />
             <img
-                className='max-h-60'
+                className='max-h-60 select-none'
                 src={bladeMasterSpriteMap[opponentCharacterState]}
                 alt='blade master'
             />

@@ -12,7 +12,6 @@ interface ShowdownTopHUDProps {
     opponentScore: number;
     myDuration: number | null;
     opponentDuration: number | null;
-    technique: string;
     showdownState: SHOWDOWN_STATE;
 }
 
@@ -21,7 +20,6 @@ const ShowdownTopHUD: FC<ShowdownTopHUDProps> = ({
     opponentScore,
     myDuration,
     opponentDuration,
-    technique,
     showdownState,
 }) => {
     const displayCondition = () =>
@@ -52,7 +50,6 @@ const ShowdownTopHUD: FC<ShowdownTopHUDProps> = ({
                     )}
                 </div>
             )}
-            <p>{`${technique}`}</p>
             {displayCondition() && (
                 <div className={`${scoreDisplayStyles()} border-l-2`}>
                     {opponentDuration !== null && (

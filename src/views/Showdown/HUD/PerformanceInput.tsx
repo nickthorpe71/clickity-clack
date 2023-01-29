@@ -1,4 +1,4 @@
-import { useState, FormEvent, FC, useEffect } from "react";
+import { useState, useCallback, FC, useEffect } from "react";
 
 interface PerformanceInputProps {
     technique: string;
@@ -12,9 +12,34 @@ const PerformanceInput: FC<PerformanceInputProps> = ({
     const [performanceText, setPerformanceText] = useState("");
     const [startTime, setStartTime] = useState<number>(0);
 
+    const onInputChange = useCallback((e: KeyboardEvent) => {
+        const newChar = e.key;
+        if (newChar === "Backspace") {
+            setPerformanceText((performanceText) =>
+                performanceText.slice(0, -1)
+            );
+            return;
+        }
+        if (!isValidChar(newChar)) return;
+        setPerformanceText((performanceText) => `${performanceText}${newChar}`);
+    }, []);
+
     useEffect(() => {
         setStartTime(Date.now());
     }, []);
+
+    useEffect(() => {
+        console.log("adding new event listener");
+        document.addEventListener("keydown", onInputChange);
+
+        return () => {
+            document.removeEventListener("keydown", onInputChange);
+        };
+    }, [onInputChange]);
+
+    useEffect(() => {
+        if (performanceText === technique) submitTechnique();
+    }, [performanceText]);
 
     const submitTechnique = () => {
         const endTime = Date.now();
@@ -23,20 +48,27 @@ const PerformanceInput: FC<PerformanceInputProps> = ({
         setPerformanceText("");
     };
 
-    const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPerformanceText(e.currentTarget.value);
-        if (e.currentTarget.value === technique) submitTechnique();
-    };
+    const isValidChar = (c: string) => c.length === 1;
 
     return (
-        <div>
-            <input
-                className='bg-gray-800 h-12 w-80 px-4 py-2 rounded-md text-slate-50'
-                autoFocus
-                value={performanceText}
-                placeholder='Perform your technique...'
-                onChange={onInputChange}
-            />
+        <div className='bg-orange-300 flex justify-center w-md max-w-xl rounded-md text-slate-900'>
+            <p className='text-3xl leading-10 text-center align-middle font-bold py-12 px-8 select-none'>
+                {technique.split("").map((char: string, index: number) => (
+                    <span
+                        key={`${char}-${index}`}
+                        className={
+                            performanceText.length - 1 >= index &&
+                            char === performanceText[index]
+                                ? "bg-green-400"
+                                : performanceText.length - 1 >= index
+                                ? "bg-red-500"
+                                : ""
+                        }
+                    >
+                        {char}
+                    </span>
+                ))}
+            </p>
         </div>
     );
 };

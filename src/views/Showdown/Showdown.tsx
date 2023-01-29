@@ -189,7 +189,6 @@ const Showdown = () => {
                 opponentScore={opponentScore}
                 myDuration={myDuration}
                 opponentDuration={opponentDuration}
-                technique={technique}
                 showdownState={showdownState}
             />
 

@@ -39,10 +39,12 @@ const ShowdownBottomHUD: FC<ShowdownBottomHUDProps> = ({
     return (
         <div className='w-full flex h-1/6 justify-center items-center z-hud-midground relative'>
             {canInput && (
-                <PerformanceInput
-                    technique={technique}
-                    submitPerformance={submitPerformance}
-                />
+                <div className='absolute bottom-[32vh]'>
+                    <PerformanceInput
+                        technique={technique}
+                        submitPerformance={submitPerformance}
+                    />
+                </div>
             )}
             {showdownState === SHOWDOWN_STATE.SHOWDOWN_COMPLETED && (
                 <Sign style='p-12 absolute bottom-[30vh]'>
