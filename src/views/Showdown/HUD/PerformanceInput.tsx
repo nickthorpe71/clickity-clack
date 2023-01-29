@@ -38,7 +38,6 @@ const PerformanceInput: FC<PerformanceInputProps> = ({
     }, []);
 
     useEffect(() => {
-        console.log("adding new event listener");
         document.addEventListener("keydown", onInputChange);
 
         return () => {

@@ -40,12 +40,6 @@ const GameManagerProvider: FC<GameManagerProps> = ({ children }) => {
         newRounds: Round[],
         newCombatants: Combatant[]
     ): void => {
-        console.log(
-            "setShowdownState",
-            newShowdownId,
-            newRounds,
-            newCombatants
-        );
         showdownId.current = newShowdownId;
         rounds.current = newRounds;
         roundIndex.current = 0;

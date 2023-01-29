@@ -47,7 +47,6 @@ const Showdown = () => {
     >(async (_: any) => {});
 
     useEffect(() => {
-        console.log("start showdown");
         startShowdown(handleRoundCompletedEvent, handleShowdownCompletedEvent);
         startRound(getCurrentRound().technique);
 
@@ -76,10 +75,7 @@ const Showdown = () => {
             updateWinner(data.combatants);
             setShowdownState(SHOWDOWN_STATE.ROUND_COMPLETED);
             await sleep(3300);
-            if (!data.showdownCompleted) {
-                console.log("start round", showdownState);
-                startRound(nextRound());
-            }
+            if (!data.showdownCompleted) startRound(nextRound());
         };
     }, [myScore, opponentScore, showdownState, technique]);
 
@@ -113,14 +109,12 @@ const Showdown = () => {
     };
 
     const handleRoundCompletedEvent = (data: RoundCompletedEventResponse) => {
-        console.log("round complete", data);
         onRoundComplete.current(data);
     };
 
     const handleShowdownCompletedEvent = (
         data: ShowdownCompletedEventResponse
     ) => {
-        console.log("showdown complete", data);
         onShowdownComplete.current(data);
     };
 
@@ -178,7 +172,7 @@ const Showdown = () => {
             await submitPerformance(duration, showdownId, getCurrentRound().id);
             setShowdownState(SHOWDOWN_STATE.WAITING_FOR_OPPONENT);
         } catch (e) {
-            console.log(e);
+            console.error(e);
         }
     };
 

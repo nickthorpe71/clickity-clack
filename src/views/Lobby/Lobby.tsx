@@ -27,7 +27,6 @@ const Lobby = () => {
     const join = async () => {
         setJoining(true);
         joinShowdown((data: Showdown) => {
-            console.log("showdown data", data);
             const showdownId = data.id as string;
             const rounds = data.rounds as Round[];
             const combatants = data.combatants as Combatant[];

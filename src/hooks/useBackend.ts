@@ -31,17 +31,11 @@ function useBackend(isAI: boolean = false) {
             return;
         }
         try {
-            console.log("join showdown request with user:", userId);
             const res: { data: JoinShowdownAPIResponse } =
                 await API.joinShowdown(userId);
 
             const newShowdownId = res.data.id;
-
-            console.log("res", res);
-            if (res.data.userId !== userId) {
-                console.log("setting user id", res.data.userId);
-                setUserId(res.data.userId);
-            }
+            if (res.data.userId !== userId) setUserId(res.data.userId);
 
             setShowdownId(newShowdownId);
 
@@ -96,7 +90,6 @@ function useBackend(isAI: boolean = false) {
             return;
         }
         try {
-            console.log("submit performance request with user:", userId);
             await API.submitPerformance(userId, duration, showdownId, roundId);
         } catch (err) {
             console.error(err);
