@@ -46,7 +46,7 @@ const PerformanceInput: FC<PerformanceInputProps> = ({
     }, [performanceText]);
 
     const timeoutCheck = async () => {
-        await sleep(45000);
+        await sleep(60000);
         if (performanceText !== technique) submitTechnique();
     };
 

@@ -141,8 +141,8 @@ const Showdown = () => {
         const opponentDuration = combatants.find(
             (c) => c.userId !== userId
         )?.duration;
-        setMyDuration(myDuration || 50000);
-        setOpponentDuration(opponentDuration || 50000);
+        setMyDuration(Math.min(myDuration || 60000, 60000));
+        setOpponentDuration(Math.min(opponentDuration || 60000, 60000));
     };
 
     const updateWinner = (
