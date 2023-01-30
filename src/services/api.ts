@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "https://clickety-clack.net/";
+const baseURL = "https://clickety-clack.net";
 
 const http = axios.create({
     baseURL,
