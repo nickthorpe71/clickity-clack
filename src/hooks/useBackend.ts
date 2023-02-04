@@ -20,7 +20,7 @@ import API from "../services/api";
 import MockAPI from "../services/mockAPI";
 
 function useBackend(isAI: boolean = false) {
-    const { userId, setUserId, setShowdownId, showdownId } = useContext(
+    const { userId, setUserId, setShowdownId } = useContext(
         GameManager
     ) as GameManagerContextType;
     const { subscribe } = usePusher();
@@ -62,6 +62,7 @@ function useBackend(isAI: boolean = false) {
     };
 
     const startShowdown = async (
+        showdownId: string,
         roundCompletedCallback: (data: RoundCompletedEventResponse) => void,
         showdownCompletedCallback: (
             data: ShowdownCompletedEventResponse

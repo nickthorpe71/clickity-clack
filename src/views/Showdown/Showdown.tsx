@@ -50,13 +50,17 @@ const Showdown = () => {
     >(async (_: any) => {});
 
     useEffect(() => {
-        startShowdown(handleRoundCompletedEvent, handleShowdownCompletedEvent);
+        startShowdown(
+            showdownId,
+            handleRoundCompletedEvent,
+            handleShowdownCompletedEvent
+        );
         startRound(getCurrentRound().technique);
 
         return () => {
             resetAllState();
         };
-    }, []);
+    }, [showdownId]);
 
     const resetAllState = () => {
         setShowdownState(SHOWDOWN_STATE.NOT_STARTED);

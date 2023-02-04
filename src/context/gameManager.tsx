@@ -11,7 +11,7 @@ const GameManagerProvider: FC<GameManagerProps> = ({ children }) => {
     const [gameState, setGameState] = useState<GAME_STATE>(GAME_STATE.LOBBY);
 
     // Showdown state
-    const showdownId = useRef<string>("");
+    const [showdownId, setShowdownId] = useState<string>("");
     const rounds = useRef<Round[]>([]);
     const roundIndex = useRef<number>(0);
     const combatants = useRef<Combatant[]>([]);
@@ -40,14 +40,10 @@ const GameManagerProvider: FC<GameManagerProps> = ({ children }) => {
         newRounds: Round[],
         newCombatants: Combatant[]
     ): void => {
-        showdownId.current = newShowdownId;
+        setShowdownId(newShowdownId);
         rounds.current = newRounds;
         roundIndex.current = 0;
         combatants.current = newCombatants;
-    };
-
-    const setShowdownId = (newShowdownId: string): void => {
-        showdownId.current = newShowdownId;
     };
 
     const getCurrentRound = (): Round => {
@@ -65,7 +61,7 @@ const GameManagerProvider: FC<GameManagerProps> = ({ children }) => {
                 nextRound,
                 setShowdownState,
                 getCurrentRound,
-                showdownId: showdownId.current,
+                showdownId: showdownId,
                 combatants: combatants.current,
             }}
         >

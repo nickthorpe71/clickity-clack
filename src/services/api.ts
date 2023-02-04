@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "https://25dvklbuf4.sharedwithexpose.com";
+const baseURL = "https://xo8u95xldt.sharedwithexpose.com";
 
 const http = axios.create({
     baseURL,
