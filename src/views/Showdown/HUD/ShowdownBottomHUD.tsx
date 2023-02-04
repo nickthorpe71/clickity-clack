@@ -47,7 +47,7 @@ const ShowdownBottomHUD: FC<ShowdownBottomHUDProps> = ({
                 </div>
             )}
             {showdownState === SHOWDOWN_STATE.SHOWDOWN_COMPLETED && (
-                <Sign style='p-12 absolute bottom-[30vh]'>
+                <Sign customStyle='p-12 absolute bottom-[30vh]'>
                     <SignTitle text={getFinalText()} />
                     <SignButton text='Return to Lobby' onClick={exitShowdown} />
                 </Sign>

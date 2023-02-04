@@ -2,6 +2,7 @@ import { Round, Combatant } from "./game.d";
 
 export enum GAME_STATE {
     INTRO,
+    MAIN_MENU,
     LOBBY,
     SHOWDOWN,
     SHOWDOWN_RESULT,

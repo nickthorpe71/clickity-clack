@@ -31,13 +31,19 @@ function useBackend(isAI: boolean = false) {
             return;
         }
         try {
+            console.log("joining showdown");
+
             const res: { data: JoinShowdownAPIResponse } =
                 await API.joinShowdown(userId);
+
+            console.log("joined showdown", res.data);
 
             const newShowdownId = res.data.id;
             if (res.data.userId !== userId) setUserId(res.data.userId);
 
             setShowdownId(newShowdownId);
+
+            console.log("subscribing to showdown ready event");
 
             subscribe(
                 `showdown.${newShowdownId}.ready`,
@@ -45,8 +51,11 @@ function useBackend(isAI: boolean = false) {
                 callback
             );
 
-            if (res.data.combatantIds.length > 1)
+            if (res.data.combatantIds.length > 1) {
+                console.log("confirming showdown");
                 await API.confirmShowdown(newShowdownId);
+                console.log("confirmed showdown");
+            }
         } catch (err) {
             console.error(err);
         }
@@ -66,6 +75,8 @@ function useBackend(isAI: boolean = false) {
             );
             return;
         }
+
+        console.log("subscribing to showdown events - id:", showdownId);
 
         subscribe(
             `showdown.${showdownId}.round.completed`,
@@ -90,7 +101,9 @@ function useBackend(isAI: boolean = false) {
             return;
         }
         try {
+            console.log("submitting performance");
             await API.submitPerformance(userId, duration, showdownId, roundId);
+            console.log("submitted performance");
         } catch (err) {
             console.error(err);
         }

@@ -1,4 +1,5 @@
 import { useEffect, useContext, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 // types
 import {
@@ -24,6 +25,8 @@ import ShowdownBottomHUD from "./HUD/ShowdownBottomHUD";
 import ShowdownScene from "./Scene/ShowdownScene";
 
 const Showdown = () => {
+    const navigate = useNavigate();
+
     const { userId, nextRound, setGameState, getCurrentRound, showdownId } =
         useContext(GameManager) as GameManagerContextType;
 
@@ -67,7 +70,8 @@ const Showdown = () => {
 
     useEffect(() => {
         onRoundComplete.current = async (data: RoundCompletedEventResponse) => {
-            // setShowdownState(SHOWDOWN_STATE.ROUND_COMPLETED);
+            console.log("round complete", data);
+
             setTechnique("");
             setDurations(data.combatants);
             await sleep(1700);
@@ -83,6 +87,8 @@ const Showdown = () => {
         onShowdownComplete.current = async (
             data: ShowdownCompletedEventResponse
         ) => {
+            console.log("showdown complete", data);
+
             await sleep(2000);
             const winner = data.winner;
             setTechnique("");
@@ -120,6 +126,7 @@ const Showdown = () => {
 
     const exitShowdown = () => {
         setGameState(GAME_STATE.LOBBY);
+        navigate("/");
     };
 
     const setDurations = (

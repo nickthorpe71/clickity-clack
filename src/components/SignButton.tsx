@@ -3,13 +3,17 @@ import { FC } from "react";
 interface SignButtonProps {
     text: string;
     onClick: () => void;
-    style?: string;
+    customStyle?: string;
 }
 
-const SignButton: FC<SignButtonProps> = ({ text, onClick, style = "" }) => {
+const SignButton: FC<SignButtonProps> = ({
+    text,
+    onClick,
+    customStyle = "",
+}) => {
     return (
         <button
-            className={`font-semibold text-slate-50 select-none ${style}`}
+            className={`font-semibold text-slate-50 select-none ${customStyle}`}
             onClick={onClick}
         >
             {text}
