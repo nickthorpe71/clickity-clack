@@ -20,7 +20,7 @@ const Lobby = () => {
         GameManager
     ) as GameManagerContextType;
 
-    const { joinShowdown } = useBackend(true);
+    const { joinShowdown } = useBackend(false);
 
     const [joining, setJoining] = useState<boolean>(false);
 

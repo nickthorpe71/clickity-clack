@@ -27,7 +27,7 @@ const Showdown = () => {
     const { userId, nextRound, setGameState, getCurrentRound, showdownId } =
         useContext(GameManager) as GameManagerContextType;
 
-    const { submitPerformance, startShowdown } = useBackend(true);
+    const { submitPerformance, startShowdown } = useBackend(false);
 
     const [showdownState, setShowdownState] = useState<SHOWDOWN_STATE>(
         SHOWDOWN_STATE.NOT_STARTED
