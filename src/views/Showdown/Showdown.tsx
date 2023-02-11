@@ -62,7 +62,10 @@ const Showdown = () => {
             handleShowdownCompletedEvent,
             isAI
         );
-        startRound(getCurrentRound().technique);
+
+        const currentRound = getCurrentRound();
+        if (!currentRound || !currentRound.technique) navigate("/");
+        else startRound(getCurrentRound().technique);
 
         return () => {
             resetAllState();
