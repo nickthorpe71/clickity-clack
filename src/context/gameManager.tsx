@@ -1,5 +1,11 @@
 import { FC, ReactNode, useState, createContext, useRef } from "react";
-import { GAME_STATE, GameManagerContextType, Round, Combatant } from "../types";
+import {
+    GAME_STATE,
+    GameManagerContextType,
+    Round,
+    Combatant,
+    Character,
+} from "../types";
 
 export const GameManager = createContext<GameManagerContextType | null>(null);
 
@@ -24,6 +30,8 @@ const GameManagerProvider: FC<GameManagerProps> = ({ children }) => {
     const setUserId = (newUserId: string): void => {
         localStorage.setItem("userId", newUserId);
     };
+    const [selectedCharacter, setSelectedCharacter] =
+        useState<Character | null>(null);
 
     const nextRound = (): string => {
         roundIndex.current += 1;
@@ -56,6 +64,8 @@ const GameManagerProvider: FC<GameManagerProps> = ({ children }) => {
             value={{
                 userId: getUserId(),
                 setUserId,
+                selectedCharacter,
+                setSelectedCharacter,
                 setShowdownId,
                 gameState,
                 setGameState,

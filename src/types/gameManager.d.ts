@@ -1,4 +1,4 @@
-import { Round, Combatant } from "./game.d";
+import { Round, Combatant, Character } from "./game.d";
 
 export enum GAME_STATE {
     INTRO,
@@ -11,6 +11,8 @@ export enum GAME_STATE {
 export type GameManagerContextType = {
     userId: string;
     setUserId: (userId: string) => void;
+    selectedCharacter: Character | null;
+    setSelectedCharacter: (character: Character) => void;
     setShowdownId: (showdownId: string) => void;
     gameState: GAME_STATE;
     setGameState: (newState: GAME_STATE) => void;

@@ -12,10 +12,7 @@ const ImageButton: FC<ImageButtonProps> = ({
     customStyle = "",
 }) => {
     return (
-        <button
-            className={`bg-transparent select-none ${customStyle}`}
-            onClick={onClick}
-        >
+        <button className={`select-none ${customStyle}`} onClick={onClick}>
             <img src={imageSrc} />
         </button>
     );

@@ -52,7 +52,7 @@ const App = () => {
             <RouterProvider router={router} />
             <div className=' z-hud-foreground absolute bottom-4 right-4'>
                 <button
-                    className='text-white text-2xl r flex items-center justify-center'
+                    className='text-white text-2xl flex items-center justify-center'
                     onClick={handleMute}
                 >
                     {isMuted ? <MdVolumeUp /> : <MdVolumeOff />}
@@ -60,7 +60,7 @@ const App = () => {
             </div>
             <div className=' z-hud-foreground absolute bottom-12 right-4'>
                 <button
-                    className='text-white text-2xl r flex items-center justify-center'
+                    className='text-white text-2xl flex items-center justify-center'
                     onClick={toggleStory}
                 >
                     <BsFillBookFill />
