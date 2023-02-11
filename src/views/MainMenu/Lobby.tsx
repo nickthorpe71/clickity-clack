@@ -22,16 +22,17 @@ import SignTitle from "../../components/SignTitle";
 import SignButton from "../../components/SignButton";
 
 const Lobby = () => {
-    const { setGameState, setShowdownState } = useContext(
+    const { setGameState, setShowdownState, setIsAI } = useContext(
         GameManager
     ) as GameManagerContextType;
     const navigate = useNavigate();
 
-    const { joinShowdown } = useBackend(false);
+    const { joinShowdown } = useBackend();
 
     const [joining, setJoining] = useState<boolean>(false);
 
-    const join = async () => {
+    const join = async (isAI: boolean) => {
+        setIsAI(isAI);
         setJoining(true);
         joinShowdown((data: Showdown) => {
             console.log("joinedShowdown", data);
@@ -44,7 +45,7 @@ const Lobby = () => {
             setGameState(GAME_STATE.SHOWDOWN);
             navigate("/showdown");
             setJoining(false);
-        });
+        }, isAI);
     };
 
     return (
@@ -53,11 +54,18 @@ const Lobby = () => {
                 "w-1/3 h-1/4 max-w-lg max-h-md p-4 pb-6 text-center flex flex-col justify-center"
             }
         >
-            <SignTitle text='Lobby' customStyle={"mb-4"} />
+            <SignTitle text='Lobby' />
             {joining && <p>Joining...</p>}
             <div className='flex flex-col'>
-                {!joining && <SignButton text='Join Showdown' onClick={join} />}
-                {!joining && <SignButton text='Play AI' onClick={join} />}
+                {!joining && (
+                    <SignButton
+                        text='Join Showdown'
+                        onClick={() => join(false)}
+                    />
+                )}
+                {!joining && (
+                    <SignButton text='Play AI' onClick={() => join(true)} />
+                )}
             </div>
         </Sign>
     );

@@ -27,10 +27,16 @@ import ShowdownScene from "./Scene/ShowdownScene";
 const Showdown = () => {
     const navigate = useNavigate();
 
-    const { userId, nextRound, setGameState, getCurrentRound, showdownId } =
-        useContext(GameManager) as GameManagerContextType;
+    const {
+        userId,
+        nextRound,
+        setGameState,
+        getCurrentRound,
+        showdownId,
+        isAI,
+    } = useContext(GameManager) as GameManagerContextType;
 
-    const { submitPerformance, startShowdown } = useBackend(false);
+    const { submitPerformance, startShowdown } = useBackend();
 
     const [showdownState, setShowdownState] = useState<SHOWDOWN_STATE>(
         SHOWDOWN_STATE.NOT_STARTED
@@ -53,7 +59,8 @@ const Showdown = () => {
         startShowdown(
             showdownId,
             handleRoundCompletedEvent,
-            handleShowdownCompletedEvent
+            handleShowdownCompletedEvent,
+            isAI
         );
         startRound(getCurrentRound().technique);
 
@@ -179,7 +186,12 @@ const Showdown = () => {
     const handleSubmitPerformance = async (duration: number) => {
         try {
             setCanInput(false);
-            await submitPerformance(duration, showdownId, getCurrentRound().id);
+            await submitPerformance(
+                duration,
+                showdownId,
+                getCurrentRound().id,
+                isAI
+            );
             setShowdownState(SHOWDOWN_STATE.WAITING_FOR_OPPONENT);
         } catch (e) {
             console.error(e);

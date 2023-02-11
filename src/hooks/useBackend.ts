@@ -19,13 +19,16 @@ import usePusher from "./usePusher";
 import API from "../services/api";
 import MockAPI from "../services/mockAPI";
 
-function useBackend(isAI: boolean = false) {
+function useBackend() {
     const { userId, setUserId, setShowdownId } = useContext(
         GameManager
     ) as GameManagerContextType;
     const { subscribe } = usePusher();
 
-    const joinShowdown = async (callback: (data: Showdown) => void) => {
+    const joinShowdown = async (
+        callback: (data: Showdown) => void,
+        isAI: boolean
+    ) => {
         if (isAI) {
             MockAPI.startMockShowdown(userId, callback);
             return;
@@ -66,7 +69,8 @@ function useBackend(isAI: boolean = false) {
         roundCompletedCallback: (data: RoundCompletedEventResponse) => void,
         showdownCompletedCallback: (
             data: ShowdownCompletedEventResponse
-        ) => void
+        ) => void,
+        isAI: boolean
     ) => {
         if (isAI) {
             MockAPI.subscribeToMockEvents(
@@ -95,7 +99,8 @@ function useBackend(isAI: boolean = false) {
     const submitPerformance = async (
         duration: number,
         showdownId: string,
-        roundId: string
+        roundId: string,
+        isAI: boolean
     ) => {
         if (isAI) {
             MockAPI.runMockRound(showdownId, userId, duration);

@@ -9,13 +9,14 @@ export enum GAME_STATE {
 }
 
 export type GameManagerContextType = {
-    userId: string;
-    setUserId: (userId: string) => void;
-    selectedCharacter: Character | null;
-    setSelectedCharacter: (character: Character) => void;
-    setShowdownId: (showdownId: string) => void;
+    // game state
     gameState: GAME_STATE;
     setGameState: (newState: GAME_STATE) => void;
+
+    // showdown state
+    isAI: boolean;
+    setIsAI: (isAI: boolean) => void;
+    setShowdownId: (showdownId: string) => void;
     nextRound: () => string;
     setShowdownState: (
         showdownId: string,
@@ -25,4 +26,10 @@ export type GameManagerContextType = {
     getCurrentRound: () => Round;
     showdownId: string;
     combatants: Combatant[];
+
+    // user state
+    userId: string;
+    setUserId: (userId: string) => void;
+    selectedCharacter: Character | null;
+    setSelectedCharacter: (character: Character) => void;
 };

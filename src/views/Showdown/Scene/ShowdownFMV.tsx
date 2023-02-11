@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import { FC, useState, useEffect, useContext } from "react";
 
 // types
 import { SoundManagerContextType } from "../../../types";
@@ -13,10 +13,16 @@ import { sleep } from "../../../utils";
 import backgroundTint from "../../../assets/images/fmv/background-tint.png";
 import bottomLine from "../../../assets/images/fmv/bottom-line.png";
 import topLine from "../../../assets/images/fmv/top-line.png";
-import bladeMasterCloseUp from "../../../assets/images/fmv/blade-master-close-up.png";
-import smilingSamuraiCloseUpLeft from "../../../assets/images/fmv/smiling-samurai-close-up-left.png";
 
-const ShowdownScene = () => {
+interface ShowdownFMVProps {
+    characterLeft: string;
+    characterRight: string;
+}
+
+const ShowdownFMV: FC<ShowdownFMVProps> = ({
+    characterLeft,
+    characterRight,
+}) => {
     const { playSFX } = useContext(SoundManager) as SoundManagerContextType;
     const [portraitTrigger, setPortraitTrigger] = useState(false);
     const [fadeOutTrigger, setFadeOutTrigger] = useState(false);
@@ -58,14 +64,14 @@ const ShowdownScene = () => {
             {portraitTrigger && (
                 <>
                     <img
-                        className='absolute h-[28%] bottom-0 right-0 animate-slide-in-right'
-                        src={bladeMasterCloseUp}
-                        alt='blade master close up'
+                        className='absolute h-[28%] top-0 left-0 animate-slide-in-left'
+                        src={characterLeft}
+                        alt='character-close-up-left'
                     />
                     <img
-                        className='absolute h-[28%] top-0 left-0 animate-slide-in-left'
-                        src={smilingSamuraiCloseUpLeft}
-                        alt='smiling samurai close up'
+                        className='absolute h-[28%] bottom-0 right-0 animate-slide-in-right'
+                        src={characterRight}
+                        alt='character-close-up-right'
                     />
                 </>
             )}
@@ -73,4 +79,4 @@ const ShowdownScene = () => {
     );
 };
 
-export default ShowdownScene;
+export default ShowdownFMV;

@@ -1,21 +1,20 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useContext, useRef } from "react";
 
-import { SHOWDOWN_STATE } from "../../../types";
+// types
+import {
+    SHOWDOWN_STATE,
+    GameManagerContextType,
+    Character,
+} from "../../../types";
+
+// state
+import { GameManager } from "../../../context/gameManager";
+
+// components
 import ShowdownFMV from "./ShowdownFMV";
 
 // assets
-
-// smiling samurai images
-import smilingSamuraiIdleSprite from "../../../assets/images/smiling-samurai/smiling-samurai-idle.png";
-import smilingSamuraiAttackSprite from "../../../assets/images/smiling-samurai/smiling-samurai-attack.png";
-import smilingSamuraiWinSprite from "../../../assets/images/smiling-samurai/smiling-samurai-win.png";
-import smilingSamuraiLoseSprite from "../../../assets/images/smiling-samurai/smiling-samurai-lose.png";
-
-// blade master images
-import bladeMasterIdleSprite from "../../../assets/images/blade-master/blade-master-idle.png";
-import bladeMasterAttackSprite from "../../../assets/images/blade-master/blade-master-attack.png";
-import bladeMasterWinSprite from "../../../assets/images/blade-master/blade-master-win.png";
-import bladeMasterLoseSprite from "../../../assets/images/blade-master/blade-master-lose.png";
+import { characters } from "../../../assets/characters";
 
 interface ShowdownSceneProps {
     showdownState: SHOWDOWN_STATE;
@@ -23,32 +22,41 @@ interface ShowdownSceneProps {
 }
 
 enum CHARACTER_STATE {
-    IDLE,
-    ATTACK,
-    WIN,
-    LOSE,
+    IDLE = "idle",
+    ATTACK = "attack",
+    WIN = "win",
+    LOSE = "lose",
 }
 
 const ShowdownScene: FC<ShowdownSceneProps> = ({ showdownState, winner }) => {
-    const [myCharacterState, setMyCharacterState] = useState<CHARACTER_STATE>(
-        CHARACTER_STATE.IDLE
+    const { selectedCharacter } = useContext(
+        GameManager
+    ) as GameManagerContextType;
+
+    const getRandomCharacter = (): Character => {
+        return characters[
+            Object.keys(characters)[
+                Math.floor(Math.random() * Object.keys(characters).length)
+            ]
+        ];
+    };
+
+    const opponentCharacter = useRef<Character>(
+        characters[
+            Object.keys(characters)[
+                Math.floor(Math.random() * Object.keys(characters).length)
+            ]
+        ]
     );
     const [opponentCharacterState, setOpponentCharacterState] =
         useState<CHARACTER_STATE>(CHARACTER_STATE.IDLE);
 
-    const smilingSamuraiSpriteMap = {
-        [CHARACTER_STATE.IDLE]: smilingSamuraiIdleSprite,
-        [CHARACTER_STATE.ATTACK]: smilingSamuraiAttackSprite,
-        [CHARACTER_STATE.WIN]: smilingSamuraiWinSprite,
-        [CHARACTER_STATE.LOSE]: smilingSamuraiLoseSprite,
-    };
-
-    const bladeMasterSpriteMap = {
-        [CHARACTER_STATE.IDLE]: bladeMasterIdleSprite,
-        [CHARACTER_STATE.ATTACK]: bladeMasterAttackSprite,
-        [CHARACTER_STATE.WIN]: bladeMasterWinSprite,
-        [CHARACTER_STATE.LOSE]: bladeMasterLoseSprite,
-    };
+    const myCharacter = useRef<Character>(
+        selectedCharacter ? selectedCharacter : getRandomCharacter()
+    );
+    const [myCharacterState, setMyCharacterState] = useState<CHARACTER_STATE>(
+        CHARACTER_STATE.IDLE
+    );
 
     useEffect(() => {
         switch (showdownState) {
@@ -90,16 +98,28 @@ const ShowdownScene: FC<ShowdownSceneProps> = ({ showdownState, winner }) => {
         >
             <img
                 className='max-h-52 scale-x-[-1] select-none'
-                src={smilingSamuraiSpriteMap[myCharacterState]}
-                alt='smiling samurai'
+                src={
+                    characters[myCharacter.current.id].images[myCharacterState]
+                }
+                alt={myCharacter.current.name}
             />
             <img
-                className='max-h-60 select-none'
-                src={bladeMasterSpriteMap[opponentCharacterState]}
-                alt='blade master'
+                className='max-h-52 select-none'
+                src={
+                    characters[opponentCharacter.current.id].images[
+                        opponentCharacterState
+                    ]
+                }
+                alt={opponentCharacter.current.name}
             />
-
-            {showdownState === SHOWDOWN_STATE.ROUND_FMV && <ShowdownFMV />}
+            {showdownState === SHOWDOWN_STATE.ROUND_FMV && (
+                <ShowdownFMV
+                    characterLeft={myCharacter.current.images.closeUpLeft}
+                    characterRight={
+                        opponentCharacter.current.images.closeUpRight
+                    }
+                />
+            )}
         </div>
     );
 };

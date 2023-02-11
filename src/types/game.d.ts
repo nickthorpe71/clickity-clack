@@ -31,5 +31,7 @@ export interface Character {
         attack: string;
         lose: string;
         win: string;
+        closeUpLeft: string;
+        closeUpRight: string;
     };
 }
