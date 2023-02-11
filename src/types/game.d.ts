@@ -22,3 +22,14 @@ export enum SHOWDOWN_STATE {
     ROUND_COMPLETED = "ROUND_COMPLETED",
     SHOWDOWN_COMPLETED = "SHOWDOWN_COMPLETED",
 }
+
+export interface Character {
+    name: string;
+    id: string;
+    images: {
+        idle: string;
+        attack: string;
+        lose: string;
+        win: string;
+    };
+}

@@ -8,7 +8,7 @@ import { SoundManagerContextType } from "./types/";
 import { SoundManager } from "./context/soundManager";
 
 // views
-import Lobby from "./views/Lobby";
+import MainMenu from "./views/MainMenu/MainMenu";
 import Showdown from "./views/Showdown/Showdown";
 
 // assets
@@ -21,7 +21,7 @@ const vignette =
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Lobby />,
+        element: <MainMenu />,
         errorElement: <div>404</div>,
     },
     {

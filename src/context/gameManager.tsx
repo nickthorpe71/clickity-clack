@@ -8,6 +8,7 @@ interface GameManagerProps {
 }
 
 const GameManagerProvider: FC<GameManagerProps> = ({ children }) => {
+    // Game state
     const [gameState, setGameState] = useState<GAME_STATE>(GAME_STATE.LOBBY);
 
     // Showdown state
@@ -16,10 +17,10 @@ const GameManagerProvider: FC<GameManagerProps> = ({ children }) => {
     const roundIndex = useRef<number>(0);
     const combatants = useRef<Combatant[]>([]);
 
+    // User state
     const getUserId = (): string => {
         return localStorage.getItem("userId") || "comb-1";
     };
-
     const setUserId = (newUserId: string): void => {
         localStorage.setItem("userId", newUserId);
     };

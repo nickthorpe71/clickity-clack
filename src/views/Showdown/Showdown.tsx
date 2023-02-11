@@ -78,7 +78,6 @@ const Showdown = () => {
 
             setTechnique("");
             setDurations(data.combatants);
-            await sleep(1700);
             incrementScore(data.combatants);
             updateWinner(data.combatants);
             setShowdownState(SHOWDOWN_STATE.ROUND_COMPLETED);
@@ -111,7 +110,7 @@ const Showdown = () => {
         setShowdownState(SHOWDOWN_STATE.ROUND_FMV);
         await sleep(3000);
         setShowdownState(SHOWDOWN_STATE.ANTICIPATION);
-        const waitTime = Math.random() * 10000;
+        const waitTime = Math.random() * 3000 + 500;
         await sleep(waitTime);
         setCanInput(true);
         setTechnique(technique);
