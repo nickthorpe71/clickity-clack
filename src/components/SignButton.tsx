@@ -13,7 +13,7 @@ const SignButton: FC<SignButtonProps> = ({
 }) => {
     return (
         <button
-            className={`font-semibold text-slate-50 select-none hover:text-orange-100 ${customStyle}`}
+            className={`font-semibold text-slate-50 select-none hover:text-red-500 ${customStyle}`}
             onClick={onClick}
         >
             {text}
